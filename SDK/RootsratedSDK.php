@@ -16,8 +16,10 @@ class RootsRatedSDK {
     }
 
     public function setAuthKeyAndToken($authKey, $token) {
-        $this->auth_key = $authKey;
-        $this->token = $token;
+        if(!empty($authKey) && !empty($token)) {
+            $this->auth_key = $authKey;
+            $this->token = $token;
+        }
     }
 
     public function getAuthKey(){
@@ -41,8 +43,10 @@ class RootsRatedSDK {
     }
 
     public function setKeyAndSecret($newKey, $newSecret){
-        $this->key = $newKey;
-        $this->secret = $newSecret;
+        if(!empty($newKey) && !empty($newSecret)) {
+            $this->key = $newKey;
+            $this->secret = $newSecret;
+        }
     }
 
     public function getSecret(){
@@ -50,15 +54,11 @@ class RootsRatedSDK {
     }
 
     public function getPluginActivatedFlag(){
-        return $this->pluginActivatedFlag;
-    }
-
-    public function setPluginActivatedFlag(){
         if (!empty($this->key) && !empty($this->secret) && !empty($this->token)) {
-            $this->pluginActivatedFlag = true;
-        } else {
-            $this->pluginActivatedFlag = false;
+            return true;
         }
+
+        return false;
     }
 
     // Get Data
@@ -112,36 +112,16 @@ class RootsRatedSDK {
         return $message;
     }
 
-    // Set Configuration
-    // TODO figure out variables needed, pass them in, and call setters in order
-    public function setConfig(){
-
-    }
-
-    // Plugin
-    // TODO once setConfig is created
-    public function activationPlugin()
+    public function getHookCallbackJS()
     {
+        $hook = '(function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
+                r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
+                d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
+            }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
+            rr(\'config\', \'channelToken\',' . $this->token . ')' ;
 
-    }
 
-    public function deactivationPlugin()
-    {
-
-    }
-
-    public  function uninstallPlugin()
-    {
-        $this->deactivationPlugin();
-    }
-
-    // Refactored Admin
-    public function getContent($newKey, $newSecret, $authKey, $newToken){
-        $this->setKeyAndSecret($newKey, $newSecret);
-        $this->setAuthKeyAndToken($authKey, $newToken);
-
-        $response = $this->getData('content');
-        return $response;
+        return $hook;
     }
 
 }
