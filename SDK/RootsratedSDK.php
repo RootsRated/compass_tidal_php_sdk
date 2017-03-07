@@ -2,7 +2,6 @@
 class RootsRatedSDK {
 
     // protected fields
-    protected $auth_key;
     protected $token;
     protected $apiURL = 'https://compass.rootsrated.com/tidal/v1_0/';
     protected $imageUploadPath;
@@ -10,20 +9,23 @@ class RootsRatedSDK {
     protected $secret;
     protected $pluginActivatedFlag = false;
 
+    public function setConfig($configJson){
+        $rootsrated = json_decode($configJson, true);
+        $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
+        $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
+        $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
+
+    }
+
     // Getters and Setters
     public function getToken(){
         return $this->token;
     }
 
-    public function setAuthKeyAndToken($authKey, $token) {
-        if(!empty($authKey) && !empty($token)) {
-            $this->auth_key = $authKey;
+    public function setToken($token) {
+        if(!empty($token)) {
             $this->token = $token;
         }
-    }
-
-    public function getAuthKey(){
-        return $this->auth_key;
     }
 
     public function getApiURL(){
@@ -53,7 +55,7 @@ class RootsRatedSDK {
         return $this->secret;
     }
 
-    public function getPluginActivatedFlag(){
+    public function getActivatedFlag(){
         if (!empty($this->key) && !empty($this->secret) && !empty($this->token)) {
             return true;
         }
@@ -64,7 +66,6 @@ class RootsRatedSDK {
     // Get Data
     public function getData($command)
     {
-
         if (!($ch = curl_init())) {
             return false;
         }
@@ -76,6 +77,7 @@ class RootsRatedSDK {
             'Authorization: Basic '. base64_encode($this->getKey() . ':' . $this->getSecret()),
             $this->getApiURL() . $this->getToken() . '/' . $command
         ));
+        
         $data = curl_exec($ch);
         curl_close($ch);
 
@@ -85,6 +87,7 @@ class RootsRatedSDK {
             return false;
         }
 
+		
         return $data;
 
     }
@@ -94,19 +97,19 @@ class RootsRatedSDK {
     }
 
     // Error messages
-    public function errorPluginActivationGlobal()
+    public function errorActivationGlobal()
     {
         $message = "Sorry, something was wrong. Please, try reactivating plugin";
         return $message;
     }
 
-    public function errorPluginActivation()
+    public function errorActivation()
     {
         $message = "Credentials invalid.";
         return $message;
     }
 
-    public function messagePluginActivated()
+    public function messageActivated()
     {
         $message = "Your plugin has been activated.";
         return $message;
@@ -114,12 +117,13 @@ class RootsRatedSDK {
 
     public function getHookCallbackJS()
     {
-        $hook = '(function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
-                r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
-                d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
+       $hook = <<<HOOKFUNCTION
+            (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
+            r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
+            d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
             }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
             rr(\'config\', \'channelToken\',' . $this->token . ')' ;
-
+HOOKFUNCTION;
 
         return $hook;
     }
