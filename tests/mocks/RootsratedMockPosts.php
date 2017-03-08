@@ -5,12 +5,12 @@ class RootsRatedMockPosts implements RootsRatedPosts
 {
 
     // Public Functions
-    public function postScheduling($postId, $distribution, $rrId)
+    public function postScheduling($distribution, $rrId)
     {
 
     }
 
-    public function postGoLive($postId, $distribution, $launchAt, $rrId)
+    public function postGoLive($distribution, $launchAt, $rrId)
     {
 
     }
@@ -25,7 +25,7 @@ class RootsRatedMockPosts implements RootsRatedPosts
 
     }
 
-    public function postRevoke($postId)
+    public function postRevoke($rrId)
     {
 
     }

@@ -1,14 +1,14 @@
 <?php
 interface RootsRatedPosts{
 
-    public function postScheduling($postId, $distribution, $rrId);
+    public function postScheduling($distribution, $rrId);
 
-    public function postGoLive($postId, $distribution, $launchAt, $rrId);
+    public function postGoLive($distribution, $launchAt, $rrId);
 
     public function postRevision($postId, $distribution, $scheduledAt);
 
     public function postUpdate($postId, $scheduledAt);
 
-    public function postRevoke($postId);
+    public function postRevoke($rrId);
 
 }

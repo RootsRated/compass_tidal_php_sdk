@@ -41,7 +41,7 @@ class RootsRatedWebhook{
         if (strlen($hookSignature) > 0 && strlen($hookName) > 0){
             $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
             if (is_array($jsonHook)) {
-	        $key = $sdk->getKey();
+	            $key = $sdk->getKey();
                 if (!empty($key)) {
                     $hookName = $jsonHook['hook'];
                     $this->parseHook($jsonHook, $hookName, $posts, $sdk);
@@ -73,7 +73,7 @@ class RootsRatedWebhook{
         //$postId = $this->getPostIdFromHook($jsonHook['distribution']['id']);
 
         switch ($hookName) {
-	case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
+	        case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
             case "distribution_go_live" : $this->postGoLive($jsonHook, $posts, $sdk); break;
             case "content_update" :  $this->postRevision($jsonHook, $posts, $sdk); break; /* changed from distribution_update to content_update */
             case "distribution_update" :  $this->postUpdate($jsonHook, $posts, $sdk); break; /* changed from distribution_update to content_update */
@@ -91,16 +91,13 @@ class RootsRatedWebhook{
         }
         $rrId = trim($jsonHook['distribution']['id']);
 
-        error_log("NEW postScheduling");
-
         $data = $sdk->getData('content/' . $rrId);
         if (!$data) {
             return 0;
         }
 
         $distribution = $data['response']['distribution'];
-        $postId = getPostIdFromHook($rrId);
-        return $posts->postScheduling($postId, $distribution, $rrId);
+        return $posts->postScheduling($distribution, $rrId);
     }
 
     private function postGoLive($jsonHook, $posts, $sdk)
@@ -121,9 +118,8 @@ class RootsRatedWebhook{
 
         $distribution = $data['response']['distribution'];
         $launchAt = $jsonHook['distribution']['launch_at'];
-        $postId = getPostIdFromHook($rrId);
 
-        return $posts->postGoLive($postId, $distribution, $launchAt, $rrId);
+        return $posts->postGoLive($distribution, $launchAt, $rrId);
         }
 
     public function postRevision($jsonHook, $posts, $sdk)
@@ -157,24 +153,8 @@ class RootsRatedWebhook{
     public function postRevoke($jsonHook, $posts)
     {
         $rrId = trim($jsonHook['distribution']['id']);
-        $postId = getPostIdFromHook($rrId);
 
-        return $posts->postRevoke($postId);
-    }
-
-    // TODO needs to be non-WP specific or refactored
-    private function getPostIdFromHook($rrPostId)
-    {
-        $query = new WP_Query(array('post_status' => 'any','meta_key'=>'_rootsrated_id', 'meta_value' => $rrPostId, 'ignore_sticky_posts' => 1));
-        $postId = 0;
-        while ( $query->have_posts() ) {
-            $query->the_post();
-            $postId = get_the_ID();
-        }
-
-        wp_reset_postdata();
-
-        return $postId;
+        return $posts->postRevoke($rrId);
     }
 
 }
