@@ -4,6 +4,6 @@ machine:
 
 test:
   pre:
-    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+    - mkdir -p $CIRCLE_ARTIFACTS/phpunit
   post:
     - vendor/bin/test-reporter
