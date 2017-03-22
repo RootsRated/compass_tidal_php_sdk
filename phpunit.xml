@@ -17,4 +17,9 @@
             <directory suffix=".php">SDK</directory>
         </whitelist>
     </filter>
+
+    <logging>
+      <log type="junit" target="$CIRCLE_TEST_REPORTS/phpunit/junit.xml"
+        logIncompleteSkipped="false" />
+    </logging>
 </phpunit>
