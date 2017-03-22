@@ -1,0 +1,13 @@
+{
+  "name": "rootsrated_media/compass_tidal_sdk",
+  "type": "library",
+  "description": "RootsRated Media's PHP SDK for accessing Compass' distribution system",
+  "homepage": "https://github.com/RootsRated/compass_tidal_php_sdk",
+  "license": "MIT",
+  "require": {
+    "php": "^5.6.0 || ^7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^5.7"
+  }
+}
