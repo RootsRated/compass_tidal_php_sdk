@@ -21,5 +21,6 @@
     <logging>
       <log type="junit" target="$CIRCLE_TEST_REPORTS/phpunit/junit.xml"
         logIncompleteSkipped="false" />
+      <log type="coverage-clover" target="$CIRCLE_TEST_REPORTS/phpunit/clover.xml" />
     </logging>
 </phpunit>
