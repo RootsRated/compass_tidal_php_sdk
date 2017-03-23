@@ -4,6 +4,11 @@ machine:
   environment:
     PROJECT_DIR: '${HOME}/${CIRCLE_PROJECT_REPONAME}'
 
+dependencies:
+  cache_directories:
+    - '~/.composer'
+    - 'vendor'
+
 test:
   pre:
     - '[[ -d "${CIRCLE_ARTIFACTS}/phpunit" ]] || mkdir -p "${CIRCLE_ARTIFACTS}/phpunit"'
