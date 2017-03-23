@@ -1,9 +1,16 @@
 machine:
   php:
     version: 5.6.22
+  environment:
+    PROJECT_DIR: '${HOME}/${CIRCLE_PROJECT_REPONAME}'
 
 test:
   pre:
-    - mkdir -p $CIRCLE_ARTIFACTS/phpunit
+    - '[[ -d "${CIRCLE_ARTIFACTS}/phpunit" ]] || mkdir -p "${CIRCLE_ARTIFACTS}/phpunit"'
+    - '[[ -d "${CIRCLE_TEST_REPORTS}/phpunit" ]] || mkdir -p "${CIRCLE_TEST_REPORTS}/phpunit"'
+    - '[[ -d "${PROJECT_DIR}/build/logs" ]] || mkdir -p "${PROJECT_DIR}/build/logs"'
   post:
+    - 'cp "${PROJECT_DIR}/build/phpunit/junit.xml" "${CIRCLE_TEST_REPORTS}/phpunit/junit.xml"'
+    - 'cp "${PROJECT_DIR}/build/phpunit/clover.xml" "${CIRCLE_ARTIFACTS}/phpunit/clover.xml"'
+    - 'cp "${CIRCLE_ARTIFACTS}/phpunit/clover.xml" "${PROJECT_DIR}/build/logs/clover.xml"'
     - vendor/bin/test-reporter
