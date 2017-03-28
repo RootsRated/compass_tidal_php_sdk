@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 require_once("mocks/RootsratedMockPosts.php");
 require_once(__DIR__ ."/../SDK/RootsratedSDK.php");
 require_once(__DIR__ ."/../SDK/RootsratedWebhook.php");
+require_once(__DIR__ ."/../SDK/RootsratedError.php");
 
 class RootsRatedSDKTest extends TestCase
 {
@@ -92,6 +93,21 @@ class RootsRatedSDKTest extends TestCase
         $body = $this->getMockReqBody($path);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
+    }
+
+    public function testPhoneHome()
+    {
+        $posts = new RootsRatedMockPosts();
+        $sdk = new RootsRatedSDK();
+        $configJson = file_get_contents(__DIR__ .'/config/config_testExecuteHook.json');
+        $sdk->setConfig($configJson);
+        $webHook = new RootsRatedWebhook();
+        $event = 'service_phone_home';
+        $headers = $this->getMockHeaders($event);
+        $path = '/mocks/hook_phone_home.json';
+        $body = $this->getMockReqBody($path);
+        $result = $webHook->executeHook($headers, $body, $posts, $sdk);
+        $this->assertRegexp('/system_info/', $result);
     }
 
     private function getMockHeaders($event)

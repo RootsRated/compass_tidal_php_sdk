@@ -5,12 +5,12 @@ class RootsRatedMockPosts implements RootsRatedPosts
 {
 
     // Public Functions
-    public function postScheduling($distribution, $rrId)
+    public function postScheduling($distribution, $rrId, $catName, $postType)
     {
 
     }
 
-    public function postGoLive($distribution, $launchAt, $rrId)
+    public function postGoLive($distribution, $launchAt, $rrId, $catName,$postType)
     {
 
     }
@@ -25,8 +25,32 @@ class RootsRatedMockPosts implements RootsRatedPosts
 
     }
 
-    public function postRevoke($rrId)
+    public function postRevoke($rrId, $postType)
     {
 
     }
+
+    public function deactivationPlugin()
+    {
+
+    }
+
+    public function getInfo()
+    {
+        $info = array();
+
+        $info['db_version'] = '3.1.1';
+        $info['siteurl'] = '';
+        $info['home'] = '';
+        $info['publish_posts'] =  true;
+        $info['delete_published_posts'] =  true;
+        $info['username_exists'] = true;
+        $info['category_exists'] = true;
+        $info['plugins'] = array();
+      
+        return $info;
+
+
+    }
+
 }

@@ -1,4 +1,8 @@
 <?php
+
+require_once __DIR__ . '/RootsratedError.php';
+
+
 class RootsRatedSDK {
 
     // protected fields
@@ -7,13 +11,24 @@ class RootsRatedSDK {
     protected $imageUploadPath;
     protected $key;
     protected $secret;
-    protected $pluginActivatedFlag = false;
+    protected $error;
+    protected $phoneHomeUrl;
+    protected $categoryName = 'RootsRated';
+    protected $postType = 'Post';
+
+
+    public function __construct(){
+        $this->error = new  RootsRatedError();
+    }
 
     public function setConfig($configJson){
         $rootsrated = json_decode($configJson, true);
         $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
         $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
         $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
+        $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
+        $this->setCategoryName($rootsrated['rootsrated']['category']);
+
 
     }
 
@@ -23,7 +38,7 @@ class RootsRatedSDK {
     }
 
     public function setToken($token) {
-        if(!empty($token)) {
+        if($this->error->hasField($token)){
             $this->token = $token;
         }
     }
@@ -41,31 +56,58 @@ class RootsRatedSDK {
     }
 
     public function getKey(){
-        return $this->key;
+        return base64_encode($this->key);
     }
 
     public function setKeyAndSecret($newKey, $newSecret){
-        if(!empty($newKey) && !empty($newSecret)) {
+    if($this->error->hasField($newKey) && $this->error->hasField($newSecret)){
             $this->key = $newKey;
             $this->secret = $newSecret;
         }
     }
 
-    public function getSecret(){
-        return $this->secret;
-    }
-
-    public function getActivatedFlag(){
-        if (!empty($this->key) && !empty($this->secret) && !empty($this->token)) {
+    public function isAuthenticated(){
+        if($this->error->hasField($this->key) && $this->error->hasField($this->secret) && $this->error->hasField($this->token)){
             return true;
         }
 
         return false;
     }
 
+    public function getCategoryName(){
+        return $this->categoryName;
+    }
+
+    public function setCategoryName($categoryName) {
+        if($this->error->hasField($categoryName)){
+            $this->categoryName = $categoryName;
+        }
+    }
+
+    public function getPostType(){
+        return $this->postType;
+    }
+
+    public function setPostType($postType) {
+        if($this->error->hasField($postType)){
+            $this->postType = $postType;
+        }
+    }
+
+    public function getPhoneHomeUrl(){
+        return $this->phoneHomeUrl;
+    }
+
+    public function setPhoneHomeUrl($phoneHomeUrl) {
+        if($this->error->hasField($phoneHomeUrl)){
+            $this->phoneHomeUrl = $phoneHomeUrl;
+        }
+    }
+
     // Get Data
     public function getData($command)
     {
+
         if (!($ch = curl_init())) {
             return false;
         }
@@ -74,50 +116,25 @@ class RootsRatedSDK {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode($this->getKey() . ':' . $this->getSecret()),
+            'Authorization: Basic '. base64_encode($this->key . ':' . $this->secret),
             $this->getApiURL() . $this->getToken() . '/' . $command
         ));
-        
         $data = curl_exec($ch);
         curl_close($ch);
 
         $data = json_decode($data, true);
 
-        if (!is_array($data) || !array_key_exists('response', $data)) {
-            return false;
+        if(!$this->error->isValidArray($data))
+	{
+      	    $data = null;
         }
-
-		
+	
         return $data;
-
     }
 
-    public function getAllContent() {
-        return $this->getData('content');
-    }
-
-    // Error messages
-    public function errorActivationGlobal()
+    public function siteJavascript()
     {
-        $message = "Sorry, something was wrong. Please, try reactivating plugin";
-        return $message;
-    }
-
-    public function errorActivation()
-    {
-        $message = "Credentials invalid.";
-        return $message;
-    }
-
-    public function messageActivated()
-    {
-        $message = "Your plugin has been activated.";
-        return $message;
-    }
-
-    public function getHookCallbackJS()
-    {
-       $hook = <<<HOOKFUNCTION
+        $hook = <<<HOOKFUNCTION
             (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
             r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
             d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
