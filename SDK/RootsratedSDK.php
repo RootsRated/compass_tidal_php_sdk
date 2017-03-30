@@ -15,21 +15,59 @@ class RootsRatedSDK {
     protected $phoneHomeUrl;
     protected $categoryName = 'RootsRated';
     protected $postType = 'Post';
+    protected $applicationPath;
 
 
     public function __construct(){
         $this->error = new  RootsRatedError();
+
+        $configJson = file_get_contents(__DIR__ .'/config.json');
+        $this->setConfig($configJson);
     }
 
     public function setConfig($configJson){
-        $rootsrated = json_decode($configJson, true);
-        $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
-        $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
-        $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
-        $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
-        $this->setCategoryName($rootsrated['rootsrated']['category']);
 
+        $rootsrated = $configJson;	
+	if (is_string($configJson))
+	{
+	    $rootsrated = json_decode($configJson, true);
+	}
 
+	if(array_key_exists('image_upload_path',$rootsrated['rootsrated']))
+	{
+            $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
+	}
+
+	if(array_key_exists('rootsrated_key',$rootsrated['rootsrated']) &&
+	     array_key_exists('rootsrated_secret',$rootsrated['rootsrated']))
+	{
+            $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
+	}
+
+	if(array_key_exists('rootsrated_token',$rootsrated['rootsrated']))
+	{
+            $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
+	}
+
+	if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
+	{
+            $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
+	}
+
+	if(array_key_exists('category',$rootsrated['rootsrated']))
+	{
+            $this->setCategoryName($rootsrated['rootsrated']['category']);
+	}
+
+	if(array_key_exists('posttype',$rootsrated['rootsrated']))
+	{
+            $this->setPostType($rootsrated['rootsrated']['posttype']);
+	}
+
+	if(array_key_exists('application_path',$rootsrated['rootsrated']))
+	{
+            $this->setApplicationPath($rootsrated['rootsrated']['application_path']);
+	}
     }
 
     // Getters and Setters
@@ -91,6 +129,18 @@ class RootsRatedSDK {
     public function setPostType($postType) {
         if($this->error->hasField($postType)){
             $this->postType = $postType;
+        }
+    }
+
+    public function getApplicationPath(){
+        return $this->applicationPath;
+    }
+
+    public function setApplicationPath($appPath) {
+
+      error_log("setApplicationPath:" .$appPath);
+        if($this->error->hasField($appPath)){
+            $this->applicationPath = $appPath;
         }
     }
 

@@ -216,8 +216,10 @@ class RootsRatedWebhook{
         $rootURL = $options['home'];
         $canCreate = $options['publish_posts']; 
         $canRevoke = $options['delete_published_posts'];
-        $machineUser = $options['username_exists']; 
-        $categoryPresent = $options['category_exists']; //$this->rootsratedCategoryExists();
+        $machineUser = $options['username_exists'];
+
+        $parent = 0;
+        $categoryPresent = category_exists($cat_name, $parent);
         $plugins = $options['plugins']; 
         $token = $sdk->getToken();
 
