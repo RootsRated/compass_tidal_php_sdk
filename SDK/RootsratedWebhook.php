@@ -1,5 +1,6 @@
 <?php
-class RootsRatedWebhook{
+class RootsRatedWebhook
+{
 
     function getAllHeaders()
     {
@@ -9,24 +10,35 @@ class RootsRatedWebhook{
             'CONTENT_LENGTH' => 'Content-Length',
             'CONTENT_MD5'    => 'Content-Md5',
         );
-        foreach ($_SERVER as $key => $value) {
-            if (substr($key, 0, 5) === 'HTTP_') {
+        foreach ($_SERVER as $key => $value) 
+        {
+            if (substr($key, 0, 5) === 'HTTP_') 
+            {
                 $key = substr($key, 5);
-                if (!isset($copy_server[$key]) || !isset($_SERVER[$key])) {
+                if (!isset($copy_server[$key]) || !isset($_SERVER[$key])) 
+                {
                     $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
                     $headers[$key] = $value;
                 }
-            } elseif (isset($copy_server[$key])) {
+            } 
+            elseif (isset($copy_server[$key])) 
+            {
                 $headers[$copy_server[$key]] = $value;
             }
         }
-        if (!isset($headers['Authorization'])) {
-            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        if (!isset($headers['Authorization'])) 
+        {
+            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) 
+            {
                 $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-            } elseif (isset($_SERVER['PHP_AUTH_USER'])) {
+            } 
+            elseif (isset($_SERVER['PHP_AUTH_USER'])) 
+            {
                 $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
                 $headers['Authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
-            } elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) {
+            } 
+            elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) 
+            {
                 $headers['Authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
             }
         }
@@ -38,21 +50,28 @@ class RootsRatedWebhook{
         $hookSignature = array_key_exists("X-Tidal-Signature",$headers)?$headers["X-Tidal-Signature"]:false;
         $hookName = array_key_exists("X-Tidal-Event",$headers)?$headers["X-Tidal-Event"]:false;
 
-        if (strlen($hookSignature) > 0 && strlen($hookName) > 0){
+        if (strlen($hookSignature) > 0 && strlen($hookName) > 0)
+        {
             $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
-            if (is_array($jsonHook)) {
+            if (is_array($jsonHook)) 
+            {
 	   
-                if ($sdk->isAuthenticated() ) {
+                if ($sdk->isAuthenticated() ) 
+                {
                     $hookName = $jsonHook['hook'];
                     $result = $this->parseHook($jsonHook, $hookName, $posts, $sdk);
-                    if($result === true) {
+                    if($result === true) 
+                    {
                          $this->HTTPStatus(200, ' 200 OK');
                         echo('{"message":"ok"}');
                         flush();
                         return true;
-                    }else{
+                    }
+                    else
+                    {
 
-                        if(gettype($result) === 'string'){
+                        if(gettype($result) === 'string')
+                        {
                             echo('{"message":"ok"}');
                             $this->HTTPStatus(200, ' 200 OK');
                             return $result;
@@ -60,17 +79,23 @@ class RootsRatedWebhook{
                         $this->HTTPStatus(401, ' 401 Invalid Hook Name');
                         return false;
                     }
-                } else {
+                } 
+                else 
+                {
                     echo 'FALSE';
                     $this->HTTPStatus(401, ' 401 No Key and/or Secret');
                     return false;
                 }
-            }else {
-	            echo 'FALSE';
+            }
+            else 
+            {
+	         echo 'FALSE';
                 $this->HTTPStatus(500, ' 500 Failed');
                 return false;
             }
-        } else { //GET! WE don't care about it
+        } 
+        else 
+        { //GET! WE don't care about it
             echo 'FALSE';
             $this->HTTPStatus(401, ' 401 Invalid Hook Signature');
             return false;
@@ -80,7 +105,8 @@ class RootsRatedWebhook{
     public function parseHook($jsonHook, $hookName, $posts, $sdk)
     {
 
-        switch ($hookName) {
+        switch ($hookName) 
+        {
 	     case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
             case "distribution_go_live" : $this->postGoLive($jsonHook, $posts, $sdk); break;
             case "content_update" :  $this->postRevision($jsonHook, $posts, $sdk); break;                   
@@ -96,14 +122,16 @@ class RootsRatedWebhook{
 
     private function postScheduling($jsonHook, $posts,$sdk)
     {
-        if(!array_key_exists('distribution', $jsonHook)) {
+        if(!array_key_exists('distribution', $jsonHook)) 
+        {
             return false;
         }
         $rrId = trim($jsonHook['distribution']['id']);
 
         $data = $sdk->getData('content/' . $rrId);
-        if (!$data) {
-            return 0;
+        if (!$data) 
+        {
+            return false;
         }
 
         $distribution = $data['response']['distribution'];
@@ -115,17 +143,20 @@ class RootsRatedWebhook{
 
     private function postGoLive($jsonHook, $posts, $sdk)
     {
-        if(!array_key_exists('distribution', $jsonHook)) {
+        if(!array_key_exists('distribution', $jsonHook)) 
+        {
             return false;
         }
 
         $rrId = trim($jsonHook['distribution']['id']);
 
-        if (empty($postId)) {
+        if (empty($postId)) 
+        {
             $gd = $sdk;
             $data = $gd->getData('content/' . $rrId);
-            if (!$data) {
-                return 0;
+            if (!$data) 
+            {
+                return false;
             }
         }
 
@@ -141,7 +172,8 @@ class RootsRatedWebhook{
     {
         $data = $sdk;
         $tempPost = $data->getData('content/' . $jsonHook['distribution']['id']);
-        if (!$tempPost) {
+        if (!$tempPost) 
+        {
             return false;
         }
 
@@ -155,7 +187,8 @@ class RootsRatedWebhook{
     {
         $data = $sdk;
         $tempPost = $data->getData('content/' . $jsonHook['distribution']['id']);
-        if (!$tempPost) {
+        if (!$tempPost) 
+        {
             return false;
         }
 
@@ -173,10 +206,12 @@ class RootsRatedWebhook{
         return $posts->postRevoke($rrId, $posttype);
     }
 
-    public function servicePhoneHome($options, $sdk){
+    public function servicePhoneHome($options, $sdk)
+    {
 
 
-        if(!$sdk->isAuthenticated()){ 
+        if(!$sdk->isAuthenticated())
+        { 
             return false;
         }
 
@@ -210,7 +245,7 @@ class RootsRatedWebhook{
 
         $options = $posts->getInfo();
 
-        $WPVersion = $options['db_version']; 
+        $platformVersion = $options['db_version']; 
         $PHPVersion = phpversion();
         $URI = $options['siteurl'];
         $rootURL = $options['home'];
@@ -219,53 +254,56 @@ class RootsRatedWebhook{
         $machineUser = $options['username_exists'];
 
         $parent = 0;
-        $categoryPresent = category_exists($cat_name, $parent);
+        $categoryPresent = $options['category_exists'];
         $plugins = $options['plugins']; 
         $token = $sdk->getToken();
 
-        $pluginsJSON = "";
-        foreach ($plugins as $plugin){
-            $version = $plugin['Version'];
-            $name = $plugin['Name'];
-            $pluginsJSON .= <<<PLUGIN
-{
-"name": ".$name.",
-"version": ".$version."
-}
-PLUGIN;
+        $pluginsJSON = array();
 
+        foreach ($plugins as $plugin)
+        {
+            $item = array();
+            $item['name'] = $plugin['Name'];
+            $item['version'] = $plugin['Name'];
+            $pluginsJSON[] = $item;
         }
 
 
-        $payload = <<<PAYLOAD
-{
-    "system_info":{
-        "wp_version": "$WPVersion",
-        "php_version": "$PHPVersion",
-        "rootsrated_plugin_uri": "$URI",
-        "wordpress_root_url": "$rootURL",
-        "installed_plugins": [
-        $pluginsJSON
-        ]
-    },
-    "channel":{
-    "token": "$token",
-    "can_create_article": $canCreate,
-    "can_revoke_article": $canRevoke,
-    },
-    "checks":{
-    "machine_user_present": $machineUser,
-     "default_category_present": $categoryPresent
-    }
-}
-PAYLOAD;
-        return $payload;
+        $system_info = array();
+        $system_info['platform_version'] = $platformVersion;
+        $system_info['php_version'] = $PHPVersion;
+        $system_info['rootsrated_plugin_uri'] = $URI;
+        $system_info['root_url'] = $rootURL;
+        $system_info['installed_plugins'] = $pluginsJSON;
+
+        $channel = array();
+        $channel['token'] = $token;
+        $channel['can_create_article'] = $canCreate;
+        $channel['can_revoke_article'] = $canRevoke;
+
+
+        $checks = array();
+        $checks['machine_user_present'] = $machineUser;
+        $checks['default_category_present'] = $categoryPresent;
+
+
+        $payload = array();
+        $payload['system_info'] = $system_info;
+        $payload['channel'] = $channel;
+        $payload['checks'] = $checks;
+
+        return json_encode($payload);
+
     }
 
-    public function HTTPStatus($code, $message){
-        if (version_compare(phpversion(), '5.4.0', '>=')) {
+    public function HTTPStatus($code, $message)
+    {
+        if (version_compare(phpversion(), '5.4.0', '>=')) 
+        {
             http_response_code($code);
-        } else {
+        } 
+        else 
+        {
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
             header($protocol . ' ' . $message);
         }

@@ -18,14 +18,16 @@ class RootsRatedSDK {
     protected $applicationPath;
 
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->error = new  RootsRatedError();
 
         $configJson = file_get_contents(__DIR__ .'/config.json');
         $this->setConfig($configJson);
     }
 
-    public function setConfig($configJson){
+    public function setConfig($configJson)
+    {
 
         $rootsrated = $configJson;	
 	if (is_string($configJson))
@@ -71,85 +73,101 @@ class RootsRatedSDK {
     }
 
     // Getters and Setters
-    public function getToken(){
+    public function getToken()
+    {
         return $this->token;
     }
 
-    public function setToken($token) {
-        if($this->error->hasField($token)){
+    public function setToken($token) 
+    {
+        if($this->error->hasField($token))
+        {
             $this->token = $token;
         }
     }
 
-    public function getApiURL(){
+    public function getApiURL()
+    {
         return $this->apiURL;
     }
 
-    public function getImageUploadPath(){
+    public function getImageUploadPath()
+    {
         return $this->imageUploadPath;
     }
 
-    public function setImageUploadPath($imagePath){
+    public function setImageUploadPath($imagePath)
+    {
         $this->imageUploadPath = $imagePath;
     }
 
-    public function getKey(){
+    public function getKey()
+    {
         return base64_encode($this->key);
     }
 
-    public function setKeyAndSecret($newKey, $newSecret){
-    if($this->error->hasField($newKey) && $this->error->hasField($newSecret)){
+    public function setKeyAndSecret($newKey, $newSecret)
+    { 
+        if($this->error->hasField($newKey) && $this->error->hasField($newSecret))
+        {
             $this->key = $newKey;
             $this->secret = $newSecret;
         }
     }
 
     public function isAuthenticated(){
-        if($this->error->hasField($this->key) && $this->error->hasField($this->secret) && $this->error->hasField($this->token)){
-            return true;
-        }
+        return ($this->error->hasField($this->key) && $this->error->hasField($this->secret) && $this->error->hasField($this->token));
 
-        return false;
     }
 
-    public function getCategoryName(){
+    public function getCategoryName()
+    {
         return $this->categoryName;
     }
 
-    public function setCategoryName($categoryName) {
-        if($this->error->hasField($categoryName)){
+    public function setCategoryName($categoryName) 
+    {
+        if($this->error->hasField($categoryName))
+        {
             $this->categoryName = $categoryName;
         }
     }
 
-    public function getPostType(){
+    public function getPostType()
+    {
         return $this->postType;
     }
 
-    public function setPostType($postType) {
-        if($this->error->hasField($postType)){
+    public function setPostType($postType) 
+    {
+        if($this->error->hasField($postType))
+        {
             $this->postType = $postType;
         }
     }
 
-    public function getApplicationPath(){
+    public function getApplicationPath()
+    {
         return $this->applicationPath;
     }
 
-    public function setApplicationPath($appPath) {
-
-      error_log("setApplicationPath:" .$appPath);
-        if($this->error->hasField($appPath)){
+    public function setApplicationPath($appPath) 
+    {
+        if($this->error->hasField($appPath))
+        {
             $this->applicationPath = $appPath;
         }
     }
 
-    public function getPhoneHomeUrl(){
+    public function getPhoneHomeUrl()
+    {
         return $this->phoneHomeUrl;
     }
 
-    public function setPhoneHomeUrl($phoneHomeUrl) {
-        if($this->error->hasField($phoneHomeUrl)){
+    public function setPhoneHomeUrl($phoneHomeUrl) 
+    {
+        if($this->error->hasField($phoneHomeUrl))
+        {
             $this->phoneHomeUrl = $phoneHomeUrl;
         }
     }
@@ -158,7 +176,8 @@ class RootsRatedSDK {
     public function getData($command)
     {
 
-        if (!($ch = curl_init())) {
+        if (!($ch = curl_init())) 
+        {
             return false;
         }
 
