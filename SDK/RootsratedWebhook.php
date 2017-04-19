@@ -234,6 +234,11 @@ class RootsRatedWebhook
         curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Authorization: Basic '. base64_encode($sdk->getKey() . ':' . $sdk->getSecret()),
+            'X-Tidal-Signature: ' . hash_hmac('sha256', $parameters, $sdk->getSecret())
+        ));
         $results = curl_exec($ch);
         $results = xmlrpc_decode($results);
         curl_close($ch);
