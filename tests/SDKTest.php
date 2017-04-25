@@ -121,7 +121,7 @@ class RootsRatedSDKTest extends TestCase
     private function getMockReqBody($path)
     {
         $body = file_get_contents(__DIR__ .$path);
-        return $body;
+        return json_encode(json_decode($body));
     }
 
 }
