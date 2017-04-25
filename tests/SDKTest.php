@@ -18,9 +18,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'distribution_update';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_body.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -32,9 +32,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'service_cancel';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_cancel.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -46,9 +46,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'content_update';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_content_update.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -60,9 +60,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'distribution_update';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_distribution_update.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -74,9 +74,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'distribution_revoke';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_revoke.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -88,9 +88,9 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'distribution_schedule';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_scheduling.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertEquals(true, $result);
     }
@@ -106,15 +106,18 @@ class RootsRatedSDKTest extends TestCase
         $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_phone_home.json';
         $body = $this->getMockReqBody($path);
+        $headers = $this->getMockHeaders($event, $body, $configJson);
         $result = $webHook->executeHook($headers, $body, $posts, $sdk);
         $this->assertRegexp('/system_info/', $result);
     }
 
-    private function getMockHeaders($event)
+    private function getMockHeaders($event, $body, $configJson)
     {
+        $configJsonArray = json_decode($configJson, true);
+
         $headers = array();
         $headers['X-Tidal-Event'] = $event;
-        $headers['X-Tidal-Signature'] = '71ef08f82876a0bd3e5dac28220dde4422a64b225adb653153d92516c0f6d316';
+        $headers['X-Tidal-Signature'] = hash_hmac('sha256', $body, $configJsonArray['rootsrated']['rootsrated_secret']);
         return $headers;
     }
 
