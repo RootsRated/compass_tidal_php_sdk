@@ -50,7 +50,7 @@ class RootsRatedWebhook
         $hookSignature = array_key_exists("X-Tidal-Signature",$headers)?$headers["X-Tidal-Signature"]:false;
         $hookName = array_key_exists("X-Tidal-Event",$headers)?$headers["X-Tidal-Event"]:false;
 
-        if (strlen($hookSignature) > 0 && strlen($hookName) > 0)
+        if ( $sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0)
         {
             $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
             if (is_array($jsonHook)) 
@@ -95,7 +95,7 @@ class RootsRatedWebhook
             }
         } 
         else 
-        { //GET! WE don't care about it
+        { 
             echo 'FALSE';
             $this->HTTPStatus(401, ' 401 Invalid Hook Signature');
             return false;
@@ -236,8 +236,7 @@ class RootsRatedWebhook
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode($sdk->getKey() . ':' . $sdk->getSecret()),
-            'X-Tidal-Signature: ' . hash_hmac('sha256', $parameters, $sdk->getSecret())
+            'Authorization: Basic '. base64_encode($sdk->getKey() . ':' . $sdk->getSecret())
         ));
         $results = curl_exec($ch);
         $results = xmlrpc_decode($results);

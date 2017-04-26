@@ -115,6 +115,12 @@ class RootsRatedSDK {
         }
     }
 
+    public function validateHookSignature($hookPayload, $requestSignature)
+    {
+      $generatedSignature = hash_hmac('sha256', $hookPayload, $this->secret);
+      return $generatedSignature == $requestSignature;
+    }
+
     public function isAuthenticated(){
         return ($this->error->hasField($this->key) && $this->error->hasField($this->secret) && $this->error->hasField($this->token));
 
