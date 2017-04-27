@@ -103,7 +103,6 @@ class RootsRatedSDKTest extends TestCase
         $sdk->setConfig($configJson);
         $webHook = new RootsRatedWebhook();
         $event = 'service_phone_home';
-        $headers = $this->getMockHeaders($event);
         $path = '/mocks/hook_phone_home.json';
         $body = $this->getMockReqBody($path);
         $headers = $this->getMockHeaders($event, $body, $configJson);

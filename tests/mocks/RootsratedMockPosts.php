@@ -15,12 +15,12 @@ class RootsRatedMockPosts implements RootsRatedPosts
 
     }
 
-    public function postRevision($postId, $distribution, $scheduledAt)
+    public function postRevision($distribution, $rrId, $postType, $scheduledAt)
     {
 
     }
 
-    public function postUpdate($postId, $scheduledAt)
+    public function postUpdate($distribution, $rrId, $postType, $scheduledAt)
     {
 
     }

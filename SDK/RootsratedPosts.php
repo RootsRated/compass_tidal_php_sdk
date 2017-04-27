@@ -5,9 +5,9 @@ interface RootsRatedPosts{
 
     public function postGoLive($distribution, $launchAt, $rrId, $catName, $postType);
 
-    public function postRevision($postId, $distribution, $scheduledAt);
+    public function postRevision($distribution, $rrId, $postType, $scheduledAt);
 
-    public function postUpdate($postId, $scheduledAt);
+    public function postUpdate($distribution, $rrId, $postType, $scheduledAt);
 
     public function postRevoke($rrId, $postType);
 

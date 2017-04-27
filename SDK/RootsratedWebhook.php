@@ -47,8 +47,8 @@ class RootsRatedWebhook
 
     function executeHook($headers, $reqBody, $posts, $sdk)
     {
-        $hookSignature = array_key_exists("X-Tidal-Signature",$headers)?$headers["X-Tidal-Signature"]:false;
-        $hookName = array_key_exists("X-Tidal-Event",$headers)?$headers["X-Tidal-Event"]:false;
+        $hookSignature = array_key_exists("X-Tidal-Signature", $headers) ?$headers["X-Tidal-Signature"] : false;
+        $hookName = array_key_exists("X-Tidal-Event", $headers) ? $headers["X-Tidal-Event"] : false;
 
         if ( $sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0)
         {
@@ -73,31 +73,31 @@ class RootsRatedWebhook
                         if(gettype($result) === 'string')
                         {
                             echo('{"message":"ok"}');
-                            $this->HTTPStatus(200, ' 200 OK');
+                            $this->HTTPStatus(200, '200 OK');
                             return $result;
                         }
-                        $this->HTTPStatus(401, ' 401 Invalid Hook Name');
+                        $this->HTTPStatus(401, '401 Invalid Hook Name');
                         return false;
                     }
                 } 
                 else 
                 {
                     echo 'FALSE';
-                    $this->HTTPStatus(401, ' 401 No Key and/or Secret');
+                    $this->HTTPStatus(401, '401 No Key and/or Secret');
                     return false;
                 }
             }
             else 
             {
 	         echo 'FALSE';
-                $this->HTTPStatus(500, ' 500 Failed');
+                $this->HTTPStatus(500, '500 Failed');
                 return false;
             }
         } 
         else 
         { 
             echo 'FALSE';
-            $this->HTTPStatus(401, ' 401 Invalid Hook Signature');
+            $this->HTTPStatus(401, '401 Invalid Hook Signature');
             return false;
         }
     }
@@ -120,7 +120,7 @@ class RootsRatedWebhook
         return true;
     }
 
-    private function postScheduling($jsonHook, $posts,$sdk)
+    private function postScheduling($jsonHook, $posts, $sdk)
     {
         if(!array_key_exists('distribution', $jsonHook)) 
         {
@@ -136,9 +136,9 @@ class RootsRatedWebhook
 
         $distribution = $data['response']['distribution'];
         $catName = $sdk->getCategoryName();
-        $posttype = $sdk->getPostType();
+        $postType = $sdk->getPostType();
 
-        return $posts->postScheduling($distribution, $rrId, $catName, $posttype);
+        return $posts->postScheduling($distribution, $rrId, $catName, $postType);
     }
 
     private function postGoLive($jsonHook, $posts, $sdk)
@@ -163,30 +163,34 @@ class RootsRatedWebhook
         $distribution = $data['response']['distribution'];
         $launchAt = $jsonHook['distribution']['launch_at'];
         $catName = $sdk->getCategoryName();
-        $posttype = $sdk->getPostType();
+        $postType = $sdk->getPostType();
 
-        return $posts->postGoLive($distribution, $launchAt, $rrId, $catName, $posttype);
+        return $posts->postGoLive($distribution, $launchAt, $rrId, $catName, $postType);
         }
 
     public function postRevision($jsonHook, $posts, $sdk)
     {
         $data = $sdk;
-        $tempPost = $data->getData('content/' . $jsonHook['distribution']['id']);
+        $tempPost = $data->getData('content/' . $rrId);
         if (!$tempPost) 
         {
             return false;
         }
 
+        $rrId = trim($jsonHook['distribution']['id']);
         $distribution = $tempPost['response']['distribution'];
         $scheduledAt = $distribution['distribution']['scheduled_at'];
+        $postType = $sdk->getPostType();
 
-        return $posts->postRevision($distribution, $scheduledAt);
+        return $posts->postRevision($distribution, $rrId, $postType, $scheduledAt);
     }
 
     public function postUpdate($jsonHook, $posts, $sdk)
     {
         $data = $sdk;
-        $tempPost = $data->getData('content/' . $jsonHook['distribution']['id']);
+        $rrId = trim($jsonHook['distribution']['id']);
+
+        $tempPost = $data->getData('content/' . $rrId);
         if (!$tempPost) 
         {
             return false;
@@ -194,16 +198,17 @@ class RootsRatedWebhook
 
         $distribution = $tempPost['response']['distribution'];
         $scheduledAt = $distribution['distribution']['scheduled_at'];
+        $postType = $sdk->getPostType();
 
-        return $posts->postUpdate($scheduledAt);
+        return $posts->postUpdate($distribution, $rrId, $postType, $scheduledAt);
     }
 
     public function postRevoke($jsonHook, $posts, $sdk)
     {
         $rrId = trim($jsonHook['distribution']['id']);
-        $posttype = $sdk->getPostType();
+        $postType = $sdk->getPostType();
         
-        return $posts->postRevoke($rrId, $posttype);
+        return $posts->postRevoke($rrId, $postType);
     }
 
     public function servicePhoneHome($options, $sdk)
@@ -226,18 +231,26 @@ class RootsRatedWebhook
 
     function sendRequest($methodName, $parameters, $sdk)
     {
-        $url = $sdk->getPhoneHomeUrl() .$sdk->getToken().'/phone_home';
+        $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
 
 
         $request = xmlrpc_encode_request($methodName, $parameters);
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $request);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode($sdk->getKey() . ':' . $sdk->getSecret())
-        ));
+
+
+        $options = array(CURLOPT_POSTFIELDS => $request,
+                         CURLOPT_URL => $url,
+                         CURLOPT_RETURNTRANSFER => 1,
+                         CURLOPT_HTTPHEADER => array(
+                             'Content-Type: application/json',
+                             'Authorization: Basic '. $sdk->getBasicAuth()
+                    ));
+
+        curl_setopt_array($ch, $options);
+
+
+
+
         $results = curl_exec($ch);
         $results = xmlrpc_decode($results);
         curl_close($ch);

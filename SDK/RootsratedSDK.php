@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/RootsratedError.php';
-
 
 class RootsRatedSDK {
 
@@ -11,7 +9,6 @@ class RootsRatedSDK {
     protected $imageUploadPath;
     protected $key;
     protected $secret;
-    protected $error;
     protected $phoneHomeUrl;
     protected $categoryName = 'RootsRated';
     protected $postType = 'Post';
@@ -20,8 +17,6 @@ class RootsRatedSDK {
 
     public function __construct()
     {
-        $this->error = new  RootsRatedError();
-
         $configJson = file_get_contents(__DIR__ .'/config.json');
         $this->setConfig($configJson);
     }
@@ -80,7 +75,7 @@ class RootsRatedSDK {
 
     public function setToken($token) 
     {
-        if($this->error->hasField($token))
+        if($this->hasField($token))
         {
             $this->token = $token;
         }
@@ -108,12 +103,18 @@ class RootsRatedSDK {
 
     public function setKeyAndSecret($newKey, $newSecret)
     { 
-        if($this->error->hasField($newKey) && $this->error->hasField($newSecret))
+        if($this->hasField($newKey) && $this->hasField($newSecret))
         {
             $this->key = $newKey;
             $this->secret = $newSecret;
         }
     }
+
+    public function getBasicAuth()
+    {
+        return base64_encode($this->key . ':' . $this->secret);
+    }
+
 
     public function validateHookSignature($hookPayload, $requestSignature)
     {
@@ -122,7 +123,7 @@ class RootsRatedSDK {
     }
 
     public function isAuthenticated(){
-        return ($this->error->hasField($this->key) && $this->error->hasField($this->secret) && $this->error->hasField($this->token));
+        return ($this->hasField($this->key) && $this->hasField($this->secret) && $this->hasField($this->token));
 
     }
 
@@ -133,7 +134,7 @@ class RootsRatedSDK {
 
     public function setCategoryName($categoryName) 
     {
-        if($this->error->hasField($categoryName))
+        if($this->hasField($categoryName))
         {
             $this->categoryName = $categoryName;
         }
@@ -146,7 +147,7 @@ class RootsRatedSDK {
 
     public function setPostType($postType) 
     {
-        if($this->error->hasField($postType))
+        if($this->hasField($postType))
         {
             $this->postType = $postType;
         }
@@ -159,7 +160,7 @@ class RootsRatedSDK {
 
     public function setApplicationPath($appPath) 
     {
-        if($this->error->hasField($appPath))
+        if($this->hasField($appPath))
         {
             $this->applicationPath = $appPath;
         }
@@ -172,7 +173,7 @@ class RootsRatedSDK {
 
     public function setPhoneHomeUrl($phoneHomeUrl) 
     {
-        if($this->error->hasField($phoneHomeUrl))
+        if($this->hasField($phoneHomeUrl))
         {
             $this->phoneHomeUrl = $phoneHomeUrl;
         }
@@ -187,19 +188,24 @@ class RootsRatedSDK {
             return false;
         }
 
-        curl_setopt($ch, CURLOPT_URL, $this->getApiURL() . $this->getToken() . '/' . $command);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Authorization: Basic '. base64_encode($this->key . ':' . $this->secret),
-            $this->getApiURL() . $this->getToken() . '/' . $command
-        ));
+
+        $options = array(CURLOPT_URL => $this->getApiURL() . $this->getToken() . '/' . $command,
+                         CURLOPT_RETURNTRANSFER => 1,
+                         CURLOPT_HTTPHEADER => array(
+                             'Content-Type: application/json',
+                             'Authorization: Basic '. $this->getBasicAuth(),
+                              $this->getApiURL() . $this->getToken() . '/' . $command
+             ));
+
+        curl_setopt_array($ch, $options);
+
+
         $data = curl_exec($ch);
         curl_close($ch);
 
         $data = json_decode($data, true);
 
-        if(!$this->error->isValidArray($data))
+        if(!$this->isValidArray($data))
 	{
       	    $data = null;
         }
@@ -214,10 +220,28 @@ class RootsRatedSDK {
             r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
             d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
             }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
-            rr(\'config\', \'channelToken\',' . $this->token . ')' ;
+            rr('config', 'channelToken',' . $this->token . ')' ;
 HOOKFUNCTION;
 
         return $hook;
     }
+
+
+    public function hasField($field)
+    {
+        return !empty($field);
+    }
+
+    public function isValidArray($data)
+    {
+        if (is_array($data) && array_key_exists('response', $data)) 
+        {
+            return true;
+        } 
+        return false;
+    }
+
+
+
 
 }
