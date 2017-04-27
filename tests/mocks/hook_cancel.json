@@ -1,0 +1,23 @@
+{
+  "hook":"service_cancel",
+  "article":{
+    "id":"4NnS7dcZLnRjtxn8fEoyLzyC",
+    "title":"Vel Itaque Alias Reprehenderit Voluptatibus",
+    "rootsrated_url" : "https://rootsrated.com/west-hester-1-ab/commodi-1-sapiente/vel-itaque-alias-reprehenderit-voluptatibus",
+    "published_at" : "2016-01-11T13:33:52Z",
+    "updated_at" : "2016-01-11T13:33:52Z",
+    "meta" : {
+      "api_url" :"https://compass.rootsrated.com/tidal/UWFSs4z9WrhBmLcTBtFGgH2D/content/KQMkxhHmzxQJ6n3Sdf88zVXC",
+      "template" : {
+        "name" : "Experience"
+      }
+    }
+  },
+  "distribution" : {
+    "id" : "4NnS7dcZLnRjtxn8fEoyLzyC",
+    "launch_at" : "2016-01-21T07:51:51Z",
+    "channel" : {
+      "id": "UWFSs4z9WrhBmLcTBtFGgH2D"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "db_version": "15342",
+  "siteurl": "http://mytesturl.com",
+  "home": "http://mytesturl.com/index.html",
+  "publish_posts": 1,
+  "delete_published_posts": 0,
+  "username_exists": 1,
+  "category_exists": 1,
+  "plugins":[
+    {
+      "Version": "1.1.2",
+      "Name": "Plugin 1"
+    },
+    {
+      "Version": "2.0.1",
+      "Name": "Plugin 2"
+    }
+    ]
+}
