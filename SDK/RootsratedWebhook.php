@@ -171,13 +171,13 @@ class RootsRatedWebhook
     public function postRevision($jsonHook, $posts, $sdk)
     {
         $data = $sdk;
+        $rrId = trim($jsonHook['distribution']['id']);
         $tempPost = $data->getData('content/' . $rrId);
         if (!$tempPost) 
         {
             return false;
         }
 
-        $rrId = trim($jsonHook['distribution']['id']);
         $distribution = $tempPost['response']['distribution'];
         $scheduledAt = $distribution['distribution']['scheduled_at'];
         $postType = $sdk->getPostType();
