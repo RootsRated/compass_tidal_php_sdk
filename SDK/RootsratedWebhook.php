@@ -104,7 +104,6 @@ class RootsRatedWebhook
 
     public function parseHook($jsonHook, $hookName, $posts, $sdk)
     {
-
         switch ($hookName) 
         {
 	     case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
@@ -214,29 +213,16 @@ class RootsRatedWebhook
     public function servicePhoneHome($options, $sdk)
     {
 
-
         if(!$sdk->isAuthenticated())
         { 
             return false;
         }
 
-        $result = $this->phoneHome($options,$sdk);
+        $request = $this->phoneHome($options,$sdk);
 
-        $method = '$this->phoneHome()';
-        $this->sendRequest($method, $result , $sdk);
-
-        return $result;
-    }
-
-
-    function sendRequest($methodName, $parameters, $sdk)
-    {
         $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
 
-
-        $request = xmlrpc_encode_request($methodName, $parameters);
         $ch = curl_init();
-
 
         $options = array(CURLOPT_POSTFIELDS => $request,
                          CURLOPT_URL => $url,
@@ -248,8 +234,36 @@ class RootsRatedWebhook
 
         curl_setopt_array($ch, $options);
 
+        $results = curl_exec($ch);
+        $results = json_decode($results, true);
+        $success = $results["success"];
+        curl_close($ch);
+        
+        if ($success){
+            return $request;
+        }
+        else{
+            return $results;
+        }
+    }
 
 
+    function sendRequest($methodName, $parameters, $sdk)
+    {
+        $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
+
+        $request = xmlrpc_encode_request($methodName, $parameters);
+        $ch = curl_init();
+
+        $options = array(CURLOPT_POSTFIELDS => $request,
+                         CURLOPT_URL => $url,
+                         CURLOPT_RETURNTRANSFER => 1,
+                         CURLOPT_HTTPHEADER => array(
+                             'Content-Type: application/json',
+                             'Authorization: Basic '. $sdk->getBasicAuth()
+                    ));
+
+        curl_setopt_array($ch, $options);
 
         $results = curl_exec($ch);
         $results = xmlrpc_decode($results);
