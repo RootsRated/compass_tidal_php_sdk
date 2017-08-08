@@ -216,11 +216,13 @@ class RootsRatedSDK {
     public function siteJavascript()
     {
         $hook = <<<HOOKFUNCTION
+         <script>
             (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
             r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
             d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
             }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
             rr('config', 'channelToken',' . $this->token . ')' ;
+         </script>
 HOOKFUNCTION;
 
         return $hook;
