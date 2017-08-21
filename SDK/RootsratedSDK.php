@@ -24,47 +24,47 @@ class RootsRatedSDK {
     public function setConfig($configJson)
     {
 
-        $rootsrated = $configJson;	
-	if (is_string($configJson))
-	{
-	    $rootsrated = json_decode($configJson, true);
-	}
+        $rootsrated = $configJson;
+        if (is_string($configJson))
+        {
+            $rootsrated = json_decode($configJson, true);
+        }
 
-	if(array_key_exists('image_upload_path',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('image_upload_path',$rootsrated['rootsrated']))
+        {
             $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
-	}
+        }
 
-	if(array_key_exists('rootsrated_key',$rootsrated['rootsrated']) &&
-	     array_key_exists('rootsrated_secret',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('rootsrated_key',$rootsrated['rootsrated']) &&
+            array_key_exists('rootsrated_secret',$rootsrated['rootsrated']))
+        {
             $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
-	}
+        }
 
-	if(array_key_exists('rootsrated_token',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('rootsrated_token',$rootsrated['rootsrated']))
+        {
             $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
-	}
+        }
 
-	if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
+        {
             $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
-	}
+        }
 
-	if(array_key_exists('category',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('category',$rootsrated['rootsrated']))
+        {
             $this->setCategoryName($rootsrated['rootsrated']['category']);
-	}
+        }
 
-	if(array_key_exists('posttype',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('posttype',$rootsrated['rootsrated']))
+        {
             $this->setPostType($rootsrated['rootsrated']['posttype']);
-	}
+        }
 
-	if(array_key_exists('application_path',$rootsrated['rootsrated']))
-	{
+        if(array_key_exists('application_path',$rootsrated['rootsrated']))
+        {
             $this->setApplicationPath($rootsrated['rootsrated']['application_path']);
-	}
+        }
     }
 
     // Getters and Setters
@@ -73,7 +73,7 @@ class RootsRatedSDK {
         return $this->token;
     }
 
-    public function setToken($token) 
+    public function setToken($token)
     {
         if($this->hasField($token))
         {
@@ -102,7 +102,7 @@ class RootsRatedSDK {
     }
 
     public function setKeyAndSecret($newKey, $newSecret)
-    { 
+    {
         if($this->hasField($newKey) && $this->hasField($newSecret))
         {
             $this->key = $newKey;
@@ -118,8 +118,8 @@ class RootsRatedSDK {
 
     public function validateHookSignature($hookPayload, $requestSignature)
     {
-      $generatedSignature = hash_hmac('sha256', $hookPayload, $this->secret);
-      return $generatedSignature == $requestSignature;
+        $generatedSignature = hash_hmac('sha256', $hookPayload, $this->secret);
+        return $generatedSignature == $requestSignature;
     }
 
     public function isAuthenticated(){
@@ -132,7 +132,7 @@ class RootsRatedSDK {
         return $this->categoryName;
     }
 
-    public function setCategoryName($categoryName) 
+    public function setCategoryName($categoryName)
     {
         if($this->hasField($categoryName))
         {
@@ -145,7 +145,7 @@ class RootsRatedSDK {
         return $this->postType;
     }
 
-    public function setPostType($postType) 
+    public function setPostType($postType)
     {
         if($this->hasField($postType))
         {
@@ -158,7 +158,7 @@ class RootsRatedSDK {
         return $this->applicationPath;
     }
 
-    public function setApplicationPath($appPath) 
+    public function setApplicationPath($appPath)
     {
         if($this->hasField($appPath))
         {
@@ -171,7 +171,7 @@ class RootsRatedSDK {
         return $this->phoneHomeUrl;
     }
 
-    public function setPhoneHomeUrl($phoneHomeUrl) 
+    public function setPhoneHomeUrl($phoneHomeUrl)
     {
         if($this->hasField($phoneHomeUrl))
         {
@@ -183,19 +183,19 @@ class RootsRatedSDK {
     public function getData($command)
     {
 
-        if (!($ch = curl_init())) 
+        if (!($ch = curl_init()))
         {
             return false;
         }
 
 
         $options = array(CURLOPT_URL => $this->getApiURL() . $this->getToken() . '/' . $command,
-                         CURLOPT_RETURNTRANSFER => 1,
-                         CURLOPT_HTTPHEADER => array(
-                             'Content-Type: application/json',
-                             'Authorization: Basic '. $this->getBasicAuth(),
-                              $this->getApiURL() . $this->getToken() . '/' . $command
-             ));
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_HTTPHEADER => array(
+                'Content-Type: application/json',
+                'Authorization: Basic '. $this->getBasicAuth(),
+                $this->getApiURL() . $this->getToken() . '/' . $command
+            ));
 
         curl_setopt_array($ch, $options);
 
@@ -206,10 +206,10 @@ class RootsRatedSDK {
         $data = json_decode($data, true);
 
         if(!$this->isValidArray($data))
-	{
-      	    $data = null;
+        {
+            $data = null;
         }
-	
+
         return $data;
     }
 
@@ -221,7 +221,7 @@ class RootsRatedSDK {
             r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
             d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
             }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
-            rr('config', 'channelToken',' . $this->token . ')' ;
+            rr('config', 'channelToken', '$this->token');
          </script>
 HOOKFUNCTION;
 
@@ -236,10 +236,10 @@ HOOKFUNCTION;
 
     public function isValidArray($data)
     {
-        if (is_array($data) && array_key_exists('response', $data)) 
+        if (is_array($data) && array_key_exists('response', $data))
         {
             return true;
-        } 
+        }
         return false;
     }
 
