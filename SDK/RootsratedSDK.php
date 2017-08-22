@@ -13,7 +13,7 @@ class RootsRatedSDK {
     protected $categoryName = 'RootsRated';
     protected $postType = 'Post';
     protected $applicationPath;
-
+    private $headerSnippetAdded = false;
 
     public function __construct()
     {
@@ -179,6 +179,14 @@ class RootsRatedSDK {
         }
     }
 
+    private function setHeaderSnippetAdded($hasBeenSet)
+    {
+        if($this->hasField($hasBeenSet))
+        {
+            $this->headerSnippetAdded = $hasBeenSet;
+        }
+    }
+
     // Get Data
     public function getData($command)
     {
@@ -215,6 +223,16 @@ class RootsRatedSDK {
 
     public function siteJavascript()
     {
+        if($this->token == '')
+        {
+            return '';
+        }
+
+        if($this->headerSnippetAdded == true)
+        {
+            return '';
+        }
+
         $hook = <<<HOOKFUNCTION
          <script>
             (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
@@ -225,6 +243,7 @@ class RootsRatedSDK {
          </script>
 HOOKFUNCTION;
 
+        $this->setHeaderSnippetAdded(true);
         return $hook;
     }
 
