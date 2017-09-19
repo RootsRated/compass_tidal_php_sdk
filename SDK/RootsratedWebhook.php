@@ -72,7 +72,7 @@ class RootsRatedWebhook
 
                         if(gettype($result) === 'string')
                         {
-                            echo('{"message":"ok"}');
+                            echo($result);
                             $this->HTTPStatus(200, '200 OK');
                             return $result;
                         }
@@ -151,8 +151,8 @@ class RootsRatedWebhook
 
         if (empty($postId)) 
         {
-            $gd = $sdk;
-            $data = $gd->getData('content/' . $rrId);
+    
+            $data = $sdk->getData('content/' . $rrId);
             if (!$data) 
             {
                 return false;
@@ -295,7 +295,7 @@ class RootsRatedWebhook
         {
             $item = array();
             $item['name'] = $plugin['Name'];
-            $item['version'] = $plugin['Name'];
+            $item['version'] = $plugin['Version'];
             $pluginsJSON[] = $item;
         }
 
