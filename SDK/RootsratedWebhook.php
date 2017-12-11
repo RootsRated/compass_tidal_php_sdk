@@ -271,52 +271,33 @@ class RootsRatedWebhook
         return $results;
     }
 
-    public function phoneHome($posts, $sdk)
-    {
-
+    public function phoneHome($posts, $sdk) {
         $options = $posts->getInfo();
 
-        $platformVersion = $options['db_version']; 
-        $PHPVersion = phpversion();
-        $URI = $options['siteurl'];
-        $rootURL = $options['home'];
-        $canCreate = $options['publish_posts']; 
-        $canRevoke = $options['delete_published_posts'];
-        $machineUser = $options['username_exists'];
-
-        $parent = 0;
-        $categoryPresent = $options['category_exists'];
         $plugins = $options['plugins']; 
-        $token = $sdk->getToken();
-
         $pluginsJSON = array();
-
-        foreach ($plugins as $plugin)
-        {
+        foreach ($plugins as $plugin) {
             $item = array();
             $item['name'] = $plugin['Name'];
             $item['version'] = $plugin['Version'];
             $pluginsJSON[] = $item;
         }
 
-
         $system_info = array();
-        $system_info['platform_version'] = $platformVersion;
-        $system_info['php_version'] = $PHPVersion;
-        $system_info['rootsrated_plugin_uri'] = $options['plugins_url'];
-        $system_info['root_url'] = $rootURL;
+        $system_info['platform_version'] = $options['db_version'];
+        $system_info['php_version'] = phpversion();
+        $system_info['root_url'] = $options['home'];
+        $system_info['plugin_url'] = $options['plugins_url'];
         $system_info['installed_plugins'] = $pluginsJSON;
 
         $channel = array();
-        $channel['token'] = $token;
-        $channel['can_create_article'] = $canCreate;
-        $channel['can_revoke_article'] = $canRevoke;
-
+        $channel['token'] = $sdk->getToken();
+        $channel['can_create_article'] = $options['publish_posts'];
+        $channel['can_revoke_article'] = $options['delete_published_posts'];
 
         $checks = array();
-        $checks['machine_user_present'] = $machineUser;
-        $checks['default_category_present'] = $categoryPresent;
-
+        $checks['machine_user_present'] = $options['username_exists'];
+        $checks['default_category_present'] = $options['category_exists'];
 
         $payload = array();
         $payload['system_info'] = $system_info;
