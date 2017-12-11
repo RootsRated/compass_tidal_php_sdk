@@ -303,7 +303,7 @@ class RootsRatedWebhook
         $system_info = array();
         $system_info['platform_version'] = $platformVersion;
         $system_info['php_version'] = $PHPVersion;
-        $system_info['rootsrated_plugin_uri'] = $URI;
+        $system_info['rootsrated_plugin_uri'] = $options['plugins_url'];
         $system_info['root_url'] = $rootURL;
         $system_info['installed_plugins'] = $pluginsJSON;
 
