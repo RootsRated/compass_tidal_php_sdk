@@ -1,3 +1,22 @@
 {
-  "hook":"service_phone_home"
-}
+  "hook":"service_phone_home", 
+  "article": {
+    "id":22502, 
+    "title":"Traveling 7,000 Miles Across South America By Bus", 
+    "rootsrated_url": "https://rootsrated.com/stories/traveling-7-000-miles-across-south-america-by-bus", "published_at":"2017-07-13T17:56:58Z", 
+    "updated_at":"2017-07-13T17:56:58Z", 
+    "meta": {
+      "api_url": "https://compass.rootsrated.com/tidal/LyjvKQC2P1Bo6YHx2VUvF9Et/content/6m6E2bBtDbdBcUVZQ8hXgJHx", 
+      "template":{
+        "name":"Story"
+        }
+      }
+    }, 
+    "distribution": {
+      "id":"6m6E2bBtDbdBcUVZQ8hXgJHx", 
+      "launch_at":"2017-07-14T15:19:51Z", 
+      "channel":{
+        "id":"LyjvKQC2P1Bo6YHx2VUvF9Et"
+      }
+    }
+  }
