@@ -188,37 +188,24 @@ class RootsRatedSDK {
     }
 
     // Get Data
-    public function getData($command)
-    {
-
-        if (!($ch = curl_init()))
-        {
+    public function getData($command) {
+        if (!$this->isAuthenticated()) {
             return false;
         }
 
-
-        $options = array(CURLOPT_URL => $this->getApiURL() . $this->getToken() . '/' . $command,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_HTTPHEADER => array(
-                'Content-Type: application/json',
-                'Authorization: Basic '. $this->getBasicAuth(),
-                $this->getApiURL() . $this->getToken() . '/' . $command
-            ));
-
-        curl_setopt_array($ch, $options);
-
-
-        $data = curl_exec($ch);
-        curl_close($ch);
-
-        $data = json_decode($data, true);
-
-        if(!$this->isValidArray($data))
-        {
-            $data = null;
+        require_once 'vendor/rmccue/requests/library/Requests.php'
+        Requests::register_autoloader();
+        $headers = array(
+          'Content-Type: application/json',
+          'Authorization: Basic '. $this->getBasicAuth(),
+        )
+        $url = $this->getApiURL() . $this->getToken() . '/' . $command;
+        $request = Requests::post($url, $headers);
+        $response = json_decode($request->body, true);
+        if(!$this->isValidArray($response)) {
+            $response = null;
         }
-
-        return $data;
+        return $response;
     }
 
     public function siteJavascript()

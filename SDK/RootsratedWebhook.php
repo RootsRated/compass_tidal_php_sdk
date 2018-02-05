@@ -210,66 +210,31 @@ class RootsRatedWebhook
         return $posts->postRevoke($rrId, $postType);
     }
 
-    public function servicePhoneHome($options, $sdk)
-    {
-
-        if(!$sdk->isAuthenticated())
-        { 
+    public function servicePhoneHome($options, $sdk) {
+        if(!$sdk->isAuthenticated()) { 
             return false;
         }
 
-        $request = $this->phoneHome($options,$sdk);
-
+        require_once 'vendor/rmccue/requests/library/Requests.php'
+        Requests::register_autoloader();
+        $payload = $this->phoneHome($options, $sdk);
+        $headers = array(
+          'Content-Type: application/json',
+          'Authorization: Basic '. $sdk->getBasicAuth(),
+        )
         $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
+        $request = Requests::post($url, $headers, $payload);
 
-        $ch = curl_init();
-
-        $options = array(CURLOPT_POSTFIELDS => $request,
-                         CURLOPT_URL => $url,
-                         CURLOPT_RETURNTRANSFER => 1,
-                         CURLOPT_HTTPHEADER => array(
-                             'Content-Type: application/json',
-                             'Authorization: Basic '. $sdk->getBasicAuth()
-                    ));
-
-        curl_setopt_array($ch, $options);
-
-        $results = curl_exec($ch);
-        $results = json_decode($results, true);
+        $response = json_decode($request->body, true);
         $success = $results["success"];
-        curl_close($ch);
-        
+
         if ($success){
             return $request;
-        }
-        else{
+        } else {
             return $results;
         }
     }
 
-
-    function sendRequest($methodName, $parameters, $sdk)
-    {
-        $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
-
-        $request = xmlrpc_encode_request($methodName, $parameters);
-        $ch = curl_init();
-
-        $options = array(CURLOPT_POSTFIELDS => $request,
-                         CURLOPT_URL => $url,
-                         CURLOPT_RETURNTRANSFER => 1,
-                         CURLOPT_HTTPHEADER => array(
-                             'Content-Type: application/json',
-                             'Authorization: Basic '. $sdk->getBasicAuth()
-                    ));
-
-        curl_setopt_array($ch, $options);
-
-        $results = curl_exec($ch);
-        $results = xmlrpc_decode($results);
-        curl_close($ch);
-        return $results;
-    }
 
     public function phoneHome($posts, $sdk) {
         $options = $posts->getInfo();
@@ -304,8 +269,7 @@ class RootsRatedWebhook
         $payload['channel'] = $channel;
         $payload['checks'] = $checks;
 
-        return json_encode($payload);
-
+        return $payload;
     }
 
     public function HTTPStatus($code, $message)
