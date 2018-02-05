@@ -189,16 +189,14 @@ class RootsRatedSDK {
 
     // Get Data
     public function getData($command) {
-        if (!$this->isAuthenticated()) {
-            return false;
+        if ( !class_exists('Requests') ) {
+            require_once 'vendor/rmccue/requests/library/Requests.php';
         }
-
-        require_once 'vendor/rmccue/requests/library/Requests.php'
         Requests::register_autoloader();
         $headers = array(
           'Content-Type: application/json',
           'Authorization: Basic '. $this->getBasicAuth(),
-        )
+        );
         $url = $this->getApiURL() . $this->getToken() . '/' . $command;
         $request = Requests::post($url, $headers);
         $response = json_decode($request->body, true);

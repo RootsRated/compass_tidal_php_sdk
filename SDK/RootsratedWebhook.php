@@ -215,13 +215,15 @@ class RootsRatedWebhook
             return false;
         }
 
-        require_once 'vendor/rmccue/requests/library/Requests.php'
+        if ( !class_exists('Requests') ) {
+            require_once 'vendor/rmccue/requests/library/Requests.php';
+        }
         Requests::register_autoloader();
         $payload = $this->phoneHome($options, $sdk);
         $headers = array(
           'Content-Type: application/json',
           'Authorization: Basic '. $sdk->getBasicAuth(),
-        )
+        );
         $url = $sdk->getPhoneHomeUrl() . $sdk->getToken() . '/phone_home';
         $request = Requests::post($url, $headers, $payload);
 
