@@ -191,11 +191,10 @@ class RootsRatedSDK {
     public function getData($command)
     {
 
-        if (!($ch = curl_init()))
-        {
+        if (!($ch = curl_init())) {
+            error_log("RootsRated Compass: curl_init failed\n");
             return false;
         }
-
 
         $options = array(CURLOPT_URL => $this->getApiURL() . $this->getToken() . '/' . $command,
             CURLOPT_RETURNTRANSFER => 1,
@@ -207,14 +206,13 @@ class RootsRatedSDK {
 
         curl_setopt_array($ch, $options);
 
-
         $data = curl_exec($ch);
         curl_close($ch);
 
         $data = json_decode($data, true);
 
-        if(!$this->isValidArray($data))
-        {
+        if(!$this->isValidArray($data)) {
+            error_log("RootsRated Compass: response is invalid (" . $data . ")\n");
             $data = null;
         }
 
