@@ -211,8 +211,7 @@ class RootsRatedSDK {
 
         $data = json_decode($response, true);
         if (!$this->isValidArray($data)) {
-            $options_as_string = preg_replace('/\s+/', ' ', print_r($options, 1));
-            error_log("RootsRated Compass: getData failed for URL " . $url . " with options " . $options_as_string . "; response=\"" . $response . "\"; code=" . $status_code . "\n");
+            error_log("RootsRated Compass: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "\n");
             return false;
         }
         return $data;
