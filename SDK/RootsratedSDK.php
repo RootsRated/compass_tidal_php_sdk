@@ -1,6 +1,5 @@
 <?php
 
-
 class RootsRatedSDK {
 
     // protected fields
@@ -188,34 +187,33 @@ class RootsRatedSDK {
     }
 
     // Get Data
-    public function getData($command)
-    {
-
-        if (!($ch = curl_init())) {
-            error_log("RootsRated Compass: curl_init failed\n");
-            return false;
-        }
-
-        $options = array(CURLOPT_URL => $this->getApiURL() . $this->getToken() . '/' . $command,
+    public function getData($command) {
+        $url = $this->getApiURL() . $this->getToken() . '/' . $command;
+        $auth = $this->getBasicAuth();
+        $options = array(
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'Authorization: Basic '. $this->getBasicAuth(),
-                $this->getApiURL() . $this->getToken() . '/' . $command
-            ));
+                'Authorization: Basic '. $auth
+            )
+        );
 
-        curl_setopt_array($ch, $options);
-
-        $data = curl_exec($ch);
-        curl_close($ch);
-
-        $data = json_decode($data, true);
-
-        if(!$this->isValidArray($data)) {
-            error_log("RootsRated Compass: response is invalid (" . $data . ")\n");
-            $data = null;
+        $http = curl_init();
+        if (!$http) {
+            error_log("RootsRated Compass: curl_init failed\n");
+            return false;
         }
+        curl_setopt_array($http, $options);
+        $response = curl_exec($http);
+        $status_code = curl_getinfo($http, CURLINFO_HTTP_CODE);
+        curl_close($http);
 
+        $data = json_decode($response, true);
+        if (!$this->isValidArray($data)) {
+            error_log("RootsRated Compass: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "\n");
+            return false;
+        }
         return $data;
     }
 
@@ -259,8 +257,5 @@ HOOKFUNCTION;
         }
         return false;
     }
-
-
-
 
 }
