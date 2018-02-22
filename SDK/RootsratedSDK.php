@@ -191,6 +191,7 @@ class RootsRatedSDK {
         $url = $this->getApiURL() . $this->getToken() . '/' . $command;
         $auth = $this->getBasicAuth();
         $options = array(
+            CURLOPT_CONNECTTIMEOUT => 30,
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_HTTPHEADER => array(
@@ -207,11 +208,12 @@ class RootsRatedSDK {
         curl_setopt_array($http, $options);
         $response = curl_exec($http);
         $status_code = curl_getinfo($http, CURLINFO_HTTP_CODE);
+        $error_detail = curl_error($http);
         curl_close($http);
 
         $data = json_decode($response, true);
         if (!$this->isValidArray($data)) {
-            error_log("RootsRated Compass: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "\n");
+            error_log("RootsRated Compass: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "; curl_error=" . $error_detail . "\n");
             return false;
         }
         return $data;
