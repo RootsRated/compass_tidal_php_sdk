@@ -192,7 +192,7 @@ class RootsRatedSDK {
         $auth = $this->getBasicAuth();
         $options = array(
             CURLOPT_CONNECTTIMEOUT => 120,
-            CURLOPT_TIMEOUT => 120
+            CURLOPT_TIMEOUT => 120,
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_HTTPHEADER => array(

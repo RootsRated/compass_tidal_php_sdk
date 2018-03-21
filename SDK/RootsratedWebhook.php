@@ -63,7 +63,7 @@ class RootsRatedWebhook
                     {
                         $this->HTTPStatus(200, ' 200 OK');
                         echo('{"message":"ok"}');
-                        error_log('RootsRated Compass: successfully executed hook ' . $hookName)
+                        error_log('RootsRated Compass: successfully executed hook ' . $hookName);
                         flush();
                         return true;
                     }
@@ -74,10 +74,10 @@ class RootsRatedWebhook
                         {
                             echo($result);
                             $this->HTTPStatus(200, '200 OK');
-                            error_log('RootsRated Compass: successfully executed hook ' . $hookName)
+                            error_log('RootsRated Compass: successfully executed hook ' . $hookName);
                             return $result;
                         }
-                        error_log('RootsRated Compass: unable to execute hook due to invalid hook name ' . $hookName)
+                        error_log('RootsRated Compass: unable to execute hook due to invalid hook name ' . $hookName);
                         $this->HTTPStatus(401, '401 Invalid Hook Name');
                         return false;
                     }
@@ -85,7 +85,7 @@ class RootsRatedWebhook
                 else 
                 {
                     echo 'FALSE';
-                    error_log('RootsRated Compass: unable to execute hook due to missing key and/or secret')
+                    error_log('RootsRated Compass: unable to execute hook due to missing key and/or secret');
                     $this->HTTPStatus(401, '401 No Key and/or Secret');
                     return false;
                 }
@@ -93,7 +93,7 @@ class RootsRatedWebhook
             else 
             {
                 echo 'FALSE';
-                error_log('RootsRated Compass: unable to execute hook due to server error')
+                error_log('RootsRated Compass: unable to execute hook due to server error');
                 $this->HTTPStatus(500, '500 Failed');
                 return false;
             }
@@ -101,7 +101,7 @@ class RootsRatedWebhook
         else 
         { 
             echo 'FALSE';
-            error_log('RootsRated Compass: unable to execute hook due to invalid signature')
+            error_log('RootsRated Compass: unable to execute hook due to invalid signature');
             $this->HTTPStatus(401, '401 Invalid Hook Signature');
             return false;
         }
