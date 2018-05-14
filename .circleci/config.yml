@@ -1,21 +1,26 @@
-machine:
-  php:
-    version: 5.6.22
-  environment:
-    PROJECT_DIR: '${HOME}/${CIRCLE_PROJECT_REPONAME}'
+version: 2
+jobs:
+  build:
+    parallelism: 1
+    working_directory: ~/compass_tidal_php_sdk
+    docker:
+      - image: circleci/php:5.6.36-apache-jessie-node-browsers
+    steps:
+      - checkout
 
-dependencies:
-  cache_directories:
-    - '~/.composer'
-    - 'vendor'
+      - run:
+          name: Install composer
+          command: 'curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer'
 
-test:
-  pre:
-    - '[[ -d "${CIRCLE_ARTIFACTS}/phpunit" ]] || mkdir -p "${CIRCLE_ARTIFACTS}/phpunit"'
-    - '[[ -d "${CIRCLE_TEST_REPORTS}/phpunit" ]] || mkdir -p "${CIRCLE_TEST_REPORTS}/phpunit"'
-    - '[[ -d "${PROJECT_DIR}/build/logs" ]] || mkdir -p "${PROJECT_DIR}/build/logs"'
-  post:
-    - 'cp "${PROJECT_DIR}/build/phpunit/junit.xml" "${CIRCLE_TEST_REPORTS}/phpunit/junit.xml"'
-    - 'cp "${PROJECT_DIR}/build/phpunit/clover.xml" "${CIRCLE_ARTIFACTS}/phpunit/clover.xml"'
-    - 'cp "${CIRCLE_ARTIFACTS}/phpunit/clover.xml" "${PROJECT_DIR}/build/logs/clover.xml"'
-    - vendor/bin/test-reporter
+      - run:
+          name: Install dependencies
+          command: composer install -n --prefer-dist
+
+      - run:
+          name: Run phpunit
+          command: |
+            ./vendor/bin/phpunit --bootstrap SDK/RootsratedSDK.php tests/SDKTest \
+                                 --log-junit ~/test_results/phpunit/junit.xml \ 
+
+      - store_test_results:
+          path: ~/test_results
