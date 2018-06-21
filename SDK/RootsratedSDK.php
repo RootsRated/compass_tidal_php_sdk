@@ -100,6 +100,10 @@ class RootsRatedSDK {
         return base64_encode($this->key);
     }
 
+    public function checkConfig() {
+        return (bool)($this->key && $this->secret && $this->token);
+    }
+
     public function setKeyAndSecret($newKey, $newSecret)
     {
         if($this->hasField($newKey) && $this->hasField($newSecret))
