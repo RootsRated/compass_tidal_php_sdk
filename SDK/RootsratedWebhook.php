@@ -56,8 +56,7 @@ class RootsRatedWebhook
         $hookSignature = array_key_exists("X-Tidal-Signature", $headers) ? $headers["X-Tidal-Signature"] : false;
         $hookName = array_key_exists("X-Tidal-Event", $headers) ? $headers["X-Tidal-Event"] : false;
 
-        if ( $sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0) {
-          error_log($reqBody);
+        if ($sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0) {
           $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
             if (is_array($jsonHook)) 
             {
