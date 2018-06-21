@@ -45,14 +45,19 @@ class RootsRatedWebhook
         return $headers;
     }
 
-    function executeHook($headers, $reqBody, $posts, $sdk)
-    {
-        $hookSignature = array_key_exists("X-Tidal-Signature", $headers) ?$headers["X-Tidal-Signature"] : false;
+    function executeHook($headers, $reqBody, $posts, $sdk) {
+        if (!$sdk->checkConfig()) {
+            echo '{"message": "Missing credentials", "installed": true, "ready": false}';
+            error_log('RootsRated Compass: unable to execute hook due to missing credentials');
+            $this->HTTPStatus(401, '401 Missing credentials');
+            return false;
+        }
+
+        $hookSignature = array_key_exists("X-Tidal-Signature", $headers) ? $headers["X-Tidal-Signature"] : false;
         $hookName = array_key_exists("X-Tidal-Event", $headers) ? $headers["X-Tidal-Event"] : false;
 
-        if ( $sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0)
-        {
-            $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
+        if ($sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0) {
+          $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
             if (is_array($jsonHook)) 
             {
                 if ($sdk->isAuthenticated() ) 
@@ -66,12 +71,8 @@ class RootsRatedWebhook
                         error_log('RootsRated Compass: successfully executed hook ' . $hookName);
                         flush();
                         return true;
-                    }
-                    else
-                    {
-
-                        if(gettype($result) === 'string')
-                        {
+                    } else {
+                        if(gettype($result) === 'string') {
                             echo($result);
                             $this->HTTPStatus(200, '200 OK');
                             error_log('RootsRated Compass: successfully executed hook ' . $hookName);
@@ -81,36 +82,28 @@ class RootsRatedWebhook
                         $this->HTTPStatus(401, '401 Invalid Hook Name');
                         return false;
                     }
-                } 
-                else 
-                {
-                    echo 'FALSE';
+                } else {
+                    echo '{"message": "No Key and/or Secret", "installed": true, "ready": false}';
                     error_log('RootsRated Compass: unable to execute hook due to missing key and/or secret');
                     $this->HTTPStatus(401, '401 No Key and/or Secret');
                     return false;
                 }
-            }
-            else 
-            {
-                echo 'FALSE';
+            } else {
+                echo '{"message": "Server error", "installed": true, "ready": false}';
                 error_log('RootsRated Compass: unable to execute hook due to server error');
                 $this->HTTPStatus(500, '500 Failed');
                 return false;
             }
-        } 
-        else 
-        { 
-            echo 'FALSE';
+        } else {
+            echo '{"message": "Invalid signature", "installed": true, "ready": false}';
             error_log('RootsRated Compass: unable to execute hook due to invalid signature');
             $this->HTTPStatus(401, '401 Invalid Hook Signature');
             return false;
         }
     }
 
-    public function parseHook($jsonHook, $hookName, $posts, $sdk)
-    {
-        switch ($hookName) 
-        {
+    public function parseHook($jsonHook, $hookName, $posts, $sdk) {
+        switch ($hookName) {
             case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
             case "distribution_go_live" : $this->postGoLive($jsonHook, $posts, $sdk); break;
             case "content_update" :  $this->postRevision($jsonHook, $posts, $sdk); break;                   
