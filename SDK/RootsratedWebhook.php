@@ -47,7 +47,7 @@ class RootsRatedWebhook
 
     function executeHook($headers, $reqBody, $posts, $sdk) {
         if (!$sdk->checkConfig()) {
-            echo '{"message": "Missing credentials", "installed": true, "ready": false}';
+            echo '{"message": "Missing credentials", "installed": true}';
             error_log('RootsRated Compass: unable to execute hook due to missing credentials');
             $this->HTTPStatus(401, '401 Missing credentials');
             return false;
@@ -83,19 +83,19 @@ class RootsRatedWebhook
                         return false;
                     }
                 } else {
-                    echo '{"message": "No Key and/or Secret", "installed": true, "ready": false}';
+                    echo '{"message": "No Key and/or Secret", "installed": true}';
                     error_log('RootsRated Compass: unable to execute hook due to missing key and/or secret');
                     $this->HTTPStatus(401, '401 No Key and/or Secret');
                     return false;
                 }
             } else {
-                echo '{"message": "Server error", "installed": true, "ready": false}';
+                echo '{"message": "Server error", "installed": true}';
                 error_log('RootsRated Compass: unable to execute hook due to server error');
                 $this->HTTPStatus(500, '500 Failed');
                 return false;
             }
         } else {
-            echo '{"message": "Invalid signature", "installed": true, "ready": false}';
+            echo '{"message": "Invalid signature", "installed": true}';
             error_log('RootsRated Compass: unable to execute hook due to invalid signature');
             $this->HTTPStatus(401, '401 Invalid Hook Signature');
             return false;
@@ -284,9 +284,11 @@ class RootsRatedWebhook
         $system_info = array();
         $system_info['platform_version'] = $options['db_version'];
         $system_info['php_version'] = phpversion();
+        $system_info['allow_url_fopen'] = ini_get('allow_url_fopen');
         $system_info['root_url'] = $options['home'];
         $system_info['plugin_url'] = $options['plugins_url'];
         $system_info['installed_plugins'] = $pluginsJSON;
+        $system_info['upload_path'] = $options['upload_path'];
 
         $channel = array();
         $channel['token'] = $sdk->getToken();
