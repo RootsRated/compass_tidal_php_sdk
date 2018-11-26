@@ -4,6 +4,6 @@
     "posttype": "Post",
     "category": "RootsRated",
     "application_path": "",
-    "phone_home_url" : "https://compass.rootsrated.com/tidal/v1_0/" 
+    "phone_home_url" : "https://app.getmatcha.com/tidal/v1_0/"
   }
 }

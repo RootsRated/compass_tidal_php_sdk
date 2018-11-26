@@ -10,34 +10,34 @@ class RootsRatedWebhook
             'CONTENT_LENGTH' => 'Content-Length',
             'CONTENT_MD5'    => 'Content-Md5',
         );
-        foreach ($_SERVER as $key => $value) 
+        foreach ($_SERVER as $key => $value)
         {
-            if (substr($key, 0, 5) === 'HTTP_') 
+            if (substr($key, 0, 5) === 'HTTP_')
             {
                 $key = substr($key, 5);
-                if (!isset($copy_server[$key]) || !isset($_SERVER[$key])) 
+                if (!isset($copy_server[$key]) || !isset($_SERVER[$key]))
                 {
                     $key = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', $key))));
                     $headers[$key] = $value;
                 }
-            } 
-            elseif (isset($copy_server[$key])) 
+            }
+            elseif (isset($copy_server[$key]))
             {
                 $headers[$copy_server[$key]] = $value;
             }
         }
-        if (!isset($headers['Authorization'])) 
+        if (!isset($headers['Authorization']))
         {
-            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) 
+            if (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION']))
             {
                 $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-            } 
-            elseif (isset($_SERVER['PHP_AUTH_USER'])) 
+            }
+            elseif (isset($_SERVER['PHP_AUTH_USER']))
             {
                 $basic_pass = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : '';
                 $headers['Authorization'] = 'Basic ' . base64_encode($_SERVER['PHP_AUTH_USER'] . ':' . $basic_pass);
-            } 
-            elseif (isset($_SERVER['PHP_AUTH_DIGEST'])) 
+            }
+            elseif (isset($_SERVER['PHP_AUTH_DIGEST']))
             {
                 $headers['Authorization'] = $_SERVER['PHP_AUTH_DIGEST'];
             }
@@ -48,7 +48,7 @@ class RootsRatedWebhook
     function executeHook($headers, $reqBody, $posts, $sdk) {
         if (!$sdk->checkConfig()) {
             echo '{"message": "Missing credentials", "installed": true}';
-            error_log('RootsRated Compass: unable to execute hook due to missing credentials');
+            error_log('Matcha: unable to execute hook due to missing credentials');
             $this->HTTPStatus(401, '401 Missing credentials');
             return false;
         }
@@ -58,45 +58,45 @@ class RootsRatedWebhook
 
         if ($sdk->validateHookSignature($reqBody, $hookSignature) && strlen($hookName) > 0) {
           $jsonHook = $reqBody ? json_decode($reqBody, true) : '';
-            if (is_array($jsonHook)) 
+            if (is_array($jsonHook))
             {
-                if ($sdk->isAuthenticated() ) 
+                if ($sdk->isAuthenticated() )
                 {
                     $hookName = $jsonHook['hook'];
                     $result = $this->parseHook($jsonHook, $hookName, $posts, $sdk);
-                    if($result === true) 
+                    if($result === true)
                     {
                         $this->HTTPStatus(200, ' 200 OK');
                         echo('{"message":"ok"}');
-                        error_log('RootsRated Compass: successfully executed hook ' . $hookName);
+                        error_log('Matcha: successfully executed hook ' . $hookName);
                         flush();
                         return true;
                     } else {
                         if(gettype($result) === 'string') {
                             echo($result);
                             $this->HTTPStatus(200, '200 OK');
-                            error_log('RootsRated Compass: successfully executed hook ' . $hookName);
+                            error_log('Matcha: successfully executed hook ' . $hookName);
                             return $result;
                         }
-                        error_log('RootsRated Compass: unable to execute hook due to invalid hook name ' . $hookName);
+                        error_log('Matcha: unable to execute hook due to invalid hook name ' . $hookName);
                         $this->HTTPStatus(401, '401 Invalid Hook Name');
                         return false;
                     }
                 } else {
                     echo '{"message": "No Key and/or Secret", "installed": true}';
-                    error_log('RootsRated Compass: unable to execute hook due to missing key and/or secret');
+                    error_log('Matcha: unable to execute hook due to missing key and/or secret');
                     $this->HTTPStatus(401, '401 No Key and/or Secret');
                     return false;
                 }
             } else {
                 echo '{"message": "Server error", "installed": true}';
-                error_log('RootsRated Compass: unable to execute hook due to server error');
+                error_log('Matcha: unable to execute hook due to server error');
                 $this->HTTPStatus(500, '500 Failed');
                 return false;
             }
         } else {
             echo '{"message": "Invalid signature", "installed": true}';
-            error_log('RootsRated Compass: unable to execute hook due to invalid signature');
+            error_log('Matcha: unable to execute hook due to invalid signature');
             $this->HTTPStatus(401, '401 Invalid Hook Signature');
             return false;
         }
@@ -106,8 +106,8 @@ class RootsRatedWebhook
         switch ($hookName) {
             case "distribution_schedule" : $this->postScheduling($jsonHook, $posts,$sdk); break;
             case "distribution_go_live" : $this->postGoLive($jsonHook, $posts, $sdk); break;
-            case "content_update" :  $this->postRevision($jsonHook, $posts, $sdk); break;                   
-            case "distribution_update" :  $this->postUpdate($jsonHook, $posts, $sdk); break; 
+            case "content_update" :  $this->postRevision($jsonHook, $posts, $sdk); break;
+            case "distribution_update" :  $this->postUpdate($jsonHook, $posts, $sdk); break;
             case "distribution_revoke" : $this->postRevoke($jsonHook, $posts, $sdk);break;
             case "service_cancel" : $posts->deactivationPlugin(); break;
             case "service_phone_home" : $result = $this->servicePhoneHome($posts, $sdk); return $result; break;
@@ -119,14 +119,14 @@ class RootsRatedWebhook
 
     private function postScheduling($jsonHook, $posts, $sdk)
     {
-        if(!array_key_exists('distribution', $jsonHook)) 
+        if(!array_key_exists('distribution', $jsonHook))
         {
             return false;
         }
         $rrId = trim($jsonHook['distribution']['id']);
 
         $data = $sdk->getData('content/' . $rrId);
-        if (!$data) 
+        if (!$data)
         {
             return false;
         }
@@ -140,18 +140,18 @@ class RootsRatedWebhook
 
     private function postGoLive($jsonHook, $posts, $sdk)
     {
-        if(!array_key_exists('distribution', $jsonHook)) 
+        if(!array_key_exists('distribution', $jsonHook))
         {
             return false;
         }
 
         $rrId = trim($jsonHook['distribution']['id']);
 
-        if (empty($postId)) 
+        if (empty($postId))
         {
-    
+
             $data = $sdk->getData('content/' . $rrId);
-            if (!$data) 
+            if (!$data)
             {
                 return false;
             }
@@ -170,7 +170,7 @@ class RootsRatedWebhook
         $data = $sdk;
         $rrId = trim($jsonHook['distribution']['id']);
         $tempPost = $data->getData('content/' . $rrId);
-        if (!$tempPost) 
+        if (!$tempPost)
         {
             return false;
         }
@@ -188,7 +188,7 @@ class RootsRatedWebhook
         $rrId = trim($jsonHook['distribution']['id']);
 
         $tempPost = $data->getData('content/' . $rrId);
-        if (!$tempPost) 
+        if (!$tempPost)
         {
             return false;
         }
@@ -204,7 +204,7 @@ class RootsRatedWebhook
     {
         $rrId = trim($jsonHook['distribution']['id']);
         $postType = $sdk->getPostType();
-        
+
         return $posts->postRevoke($rrId, $postType);
     }
 
@@ -212,7 +212,7 @@ class RootsRatedWebhook
     {
 
         if(!$sdk->isAuthenticated())
-        { 
+        {
             return false;
         }
 
@@ -236,7 +236,7 @@ class RootsRatedWebhook
         $results = json_decode($results, true);
         $success = $results["success"];
         curl_close($ch);
-        
+
         if ($success){
             return $request;
         }
@@ -272,7 +272,7 @@ class RootsRatedWebhook
     public function phoneHome($posts, $sdk) {
         $options = $posts->getInfo();
 
-        $plugins = $options['plugins']; 
+        $plugins = $options['plugins'];
         $pluginsJSON = array();
         foreach ($plugins as $plugin) {
             $item = array();
@@ -310,11 +310,11 @@ class RootsRatedWebhook
 
     public function HTTPStatus($code, $message)
     {
-        if (version_compare(phpversion(), '5.4.0', '>=')) 
+        if (version_compare(phpversion(), '5.4.0', '>='))
         {
             http_response_code($code);
-        } 
-        else 
+        }
+        else
         {
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
             header($protocol . ' ' . $message);
