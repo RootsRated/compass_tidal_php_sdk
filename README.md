@@ -1,11 +1,11 @@
-# Compass Tidal PHP SDK
+# Matcha PHP SDK
 
 [![Code Climate](https://codeclimate.com/repos/58d2d7a042f14a02710000c0/badges/3f57be90855275bfa1a4/gpa.svg)](https://codeclimate.com/repos/58d2d7a042f14a02710000c0/feed)
 [![Test Coverage](https://codeclimate.com/repos/58d2d7a042f14a02710000c0/badges/3f57be90855275bfa1a4/coverage.svg)](https://codeclimate.com/repos/58d2d7a042f14a02710000c0/coverage)
 [![CircleCI](https://circleci.com/gh/RootsRated/compass_tidal_php_sdk/tree/master.svg?style=svg&circle-token=9ca7bfabe320d6b4a14e8cecc24457f35eb099b0)](https://circleci.com/gh/RootsRated/compass_tidal_php_sdk/tree/master)
 
 A full-featured SDK, written in PHP, to allow simplified access to
-RootsRated Media's Compass platform.
+the Matcha content distribution platform.
 
 ## Requirements
 

@@ -4,7 +4,7 @@ class RootsRatedSDK {
 
     // protected fields
     protected $token;
-    protected $apiURL = 'https://compass.rootsrated.com/tidal/v1_0/';
+    protected $apiURL = 'https://app.getmatcha.com/tidal/v1_0/';
     protected $imageUploadPath;
     protected $key;
     protected $secret;
@@ -207,7 +207,7 @@ class RootsRatedSDK {
 
         $http = curl_init();
         if (!$http) {
-            error_log("RootsRated Compass: curl_init failed\n");
+            error_log("Matcha: curl_init failed\n");
             return false;
         }
         curl_setopt_array($http, $options);
@@ -218,7 +218,7 @@ class RootsRatedSDK {
 
         $data = json_decode($response, true);
         if (!$this->isValidArray($data)) {
-            error_log("RootsRated Compass: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "; curl_error=" . $error_detail . "\n");
+            error_log("Matcha: getData failed for URL " . $url . "; response=\"" . $response . "\"; response code=" . $status_code . "; curl_error=" . $error_detail . "\n");
             return false;
         }
         return $data;
@@ -241,7 +241,7 @@ class RootsRatedSDK {
             (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
             r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
             d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
-            }}(window,document,"script","https://static.rootsrated.com/rootsrated.min.js","rr"));
+            }}(window,document,"script","https://static.getmatcha.com/rootsrated.min.js","rr"));
             rr('config', 'channelToken', '$this->token');
          </script>
 HOOKFUNCTION;
