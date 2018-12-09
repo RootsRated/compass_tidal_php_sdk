@@ -5,12 +5,12 @@ class RootsRatedMockPosts implements RootsRatedPosts
 {
 
     // Public Functions
-    public function postScheduling($distribution, $rrId, $catName, $postType)
+    public function postScheduling($distribution, $rrId, $postType)
     {
 
     }
 
-    public function postGoLive($distribution, $launchAt, $rrId, $catName,$postType)
+    public function postGoLive($distribution, $launchAt, $rrId, $postType)
     {
 
     }
@@ -45,13 +45,10 @@ class RootsRatedMockPosts implements RootsRatedPosts
         $info['publish_posts'] =  true;
         $info['delete_published_posts'] =  true;
         $info['username_exists'] = true;
-        $info['category_exists'] = true;
         $info['plugins'] = array();
-	$info['plugins_url'] = 'wp-content/plugins/';
-      
+        $info['plugins_url'] = 'wp-content/plugins/';
+
         return $info;
-
-
     }
 
 }

@@ -5,7 +5,6 @@
   "publish_posts": 1,
   "delete_published_posts": 0,
   "username_exists": 1,
-  "category_exists": 1,
   "plugins":[
     {
       "Version": "1.1.2",

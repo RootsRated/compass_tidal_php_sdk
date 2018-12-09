@@ -132,10 +132,9 @@ class RootsRatedWebhook
         }
 
         $distribution = $data['response']['distribution'];
-        $catName = $sdk->getCategoryName();
         $postType = $sdk->getPostType();
 
-        return $posts->postScheduling($distribution, $rrId, $catName, $postType);
+        return $posts->postScheduling($distribution, $rrId, $postType);
     }
 
     private function postGoLive($jsonHook, $posts, $sdk)
@@ -159,10 +158,9 @@ class RootsRatedWebhook
 
         $distribution = $data['response']['distribution'];
         $launchAt = $jsonHook['distribution']['launch_at'];
-        $catName = $sdk->getCategoryName();
         $postType = $sdk->getPostType();
 
-        return $posts->postGoLive($distribution, $launchAt, $rrId, $catName, $postType);
+        return $posts->postGoLive($distribution, $launchAt, $rrId, $postType);
         }
 
     public function postRevision($jsonHook, $posts, $sdk)
@@ -297,7 +295,6 @@ class RootsRatedWebhook
 
         $checks = array();
         $checks['machine_user_present'] = $options['username_exists'];
-        $checks['default_category_present'] = $options['category_exists'];
 
         $payload = array();
         $payload['system_info'] = $system_info;
