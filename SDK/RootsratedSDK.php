@@ -9,7 +9,6 @@ class RootsRatedSDK {
     protected $key;
     protected $secret;
     protected $phoneHomeUrl;
-    protected $categoryName = 'RootsRated';
     protected $postType = 'Post';
     protected $applicationPath;
     private $headerSnippetAdded = false;
@@ -48,11 +47,6 @@ class RootsRatedSDK {
         if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
         {
             $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
-        }
-
-        if(array_key_exists('category',$rootsrated['rootsrated']))
-        {
-            $this->setCategoryName($rootsrated['rootsrated']['category']);
         }
 
         if(array_key_exists('posttype',$rootsrated['rootsrated']))
@@ -128,19 +122,6 @@ class RootsRatedSDK {
     public function isAuthenticated(){
         return ($this->hasField($this->key) && $this->hasField($this->secret) && $this->hasField($this->token));
 
-    }
-
-    public function getCategoryName()
-    {
-        return $this->categoryName;
-    }
-
-    public function setCategoryName($categoryName)
-    {
-        if($this->hasField($categoryName))
-        {
-            $this->categoryName = $categoryName;
-        }
     }
 
     public function getPostType()

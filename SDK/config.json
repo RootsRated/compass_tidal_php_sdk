@@ -2,7 +2,6 @@
   "rootsrated":{
     "image_upload_path": "",
     "posttype": "Post",
-    "category": "RootsRated",
     "application_path": "",
     "phone_home_url" : "https://app.getmatcha.com/tidal/v1_0/"
   }
