@@ -20,13 +20,14 @@ class RootsRatedSDK {
     }
 
     public function setConfig($configJson) {
-      if (!$configJson) {
-        return;
+      if (is_string($configJson)) {
+        $rootsrated = json_decode($configJson, true);
+      } else {
+        $rootsrated = $configJson;
       }
 
-      $rootsrated = $configJson;
-      if (is_string($configJson)) {
-          $rootsrated = json_decode($configJson, true);
+      if (!$rootsrated || !$rootsrated['rootsrated']) {
+        return;
       }
 
       if(array_key_exists('image_upload_path', $rootsrated['rootsrated']))
