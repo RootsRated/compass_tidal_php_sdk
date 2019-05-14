@@ -19,45 +19,46 @@ class RootsRatedSDK {
         $this->setConfig($configJson);
     }
 
-    public function setConfig($configJson)
-    {
+    public function setConfig($configJson) {
+      if (!$configJson) {
+        return;
+      }
 
-        $rootsrated = $configJson;
-        if (is_string($configJson))
-        {
-            $rootsrated = json_decode($configJson, true);
-        }
+      $rootsrated = $configJson;
+      if (is_string($configJson)) {
+          $rootsrated = json_decode($configJson, true);
+      }
 
-        if(array_key_exists('image_upload_path',$rootsrated['rootsrated']))
-        {
-            $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
-        }
+      if(array_key_exists('image_upload_path', $rootsrated['rootsrated']))
+      {
+          $this->setImageUploadPath($rootsrated['rootsrated']['image_upload_path']);
+      }
 
-        if(array_key_exists('rootsrated_key',$rootsrated['rootsrated']) &&
-            array_key_exists('rootsrated_secret',$rootsrated['rootsrated']))
-        {
-            $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
-        }
+      if(array_key_exists('rootsrated_key', $rootsrated['rootsrated']) &&
+          array_key_exists('rootsrated_secret', $rootsrated['rootsrated']))
+      {
+          $this->setKeyAndSecret($rootsrated['rootsrated']['rootsrated_key'], $rootsrated['rootsrated']['rootsrated_secret']);
+      }
 
-        if(array_key_exists('rootsrated_token',$rootsrated['rootsrated']))
-        {
-            $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
-        }
+      if(array_key_exists('rootsrated_token', $rootsrated['rootsrated']))
+      {
+          $this->setToken($rootsrated['rootsrated']['rootsrated_token']);
+      }
 
-        if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
-        {
-            $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
-        }
+      if(array_key_exists('phone_home_url',$rootsrated['rootsrated']))
+      {
+          $this->setPhoneHomeUrl($rootsrated['rootsrated']['phone_home_url']);
+      }
 
-        if(array_key_exists('posttype',$rootsrated['rootsrated']))
-        {
-            $this->setPostType($rootsrated['rootsrated']['posttype']);
-        }
+      if(array_key_exists('posttype',$rootsrated['rootsrated']))
+      {
+          $this->setPostType($rootsrated['rootsrated']['posttype']);
+      }
 
-        if(array_key_exists('application_path',$rootsrated['rootsrated']))
-        {
-            $this->setApplicationPath($rootsrated['rootsrated']['application_path']);
-        }
+      if(array_key_exists('application_path',$rootsrated['rootsrated']))
+      {
+          $this->setApplicationPath($rootsrated['rootsrated']['application_path']);
+      }
     }
 
     // Getters and Setters
