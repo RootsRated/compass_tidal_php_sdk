@@ -13,4 +13,6 @@ interface RootsRatedPosts {
 
   public function getInfo();
 
+  public function distributionUrls();
+
 }

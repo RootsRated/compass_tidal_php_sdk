@@ -301,8 +301,8 @@ class RootsRatedWebhook
         $payload['channel'] = $channel;
         $payload['checks'] = $checks;
 
-        return json_encode($payload);
 
+        return json_encode($payload);
     }
 
     public function HTTPStatus($code, $message)
