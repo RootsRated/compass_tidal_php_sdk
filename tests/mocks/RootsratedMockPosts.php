@@ -47,6 +47,7 @@ class RootsRatedMockPosts implements RootsRatedPosts
         $info['username_exists'] = true;
         $info['plugins'] = array();
         $info['plugins_url'] = 'wp-content/plugins/';
+	$info['upload_path'] = 'wp-content/uploads/';
 
         return $info;
     }
