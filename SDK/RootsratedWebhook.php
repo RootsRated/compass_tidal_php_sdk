@@ -296,11 +296,13 @@ class RootsRatedWebhook
         $checks = array();
         $checks['machine_user_present'] = $options['username_exists'];
 
+        $distribution_urls = $posts->distributionUrls();
+
         $payload = array();
         $payload['system_info'] = $system_info;
         $payload['channel'] = $channel;
         $payload['checks'] = $checks;
-
+        $payload['distribution_urls'] = $distribution_urls;
 
         return json_encode($payload);
     }
