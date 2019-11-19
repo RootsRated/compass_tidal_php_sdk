@@ -221,7 +221,7 @@ class RootsRatedSDK {
 
         $hook = <<<HOOKFUNCTION
          <script>
-           (function(m,a,t,c,ha){if(!m[ha]){if(m.rr){m[ha]=m.rr;return}m[ha]=function(){(m[ha].q=m[ha].q||[]).push(arguments)};m[ha].q=m[ha].q||[];m.rr=m[ha];var element=a.createElement(t);var firstScriptTag=a.getElementsByTagName(t)[0];element.async=true;element.src=c;firstScriptTag.parentNode.insertBefore(element,firstScriptTag)}})(window,document,"script","https://mjs.getmatcha.com/matcha.min.js","matcha");
+           (function(m,a,t,c,ha){if(!m[ha]){if(m.rr){m[ha]=m.rr;return}m[ha]=function(){(m[ha].q=m[ha].q||[]).push(arguments)};m[ha].q=m[ha].q||[];m.rr=m[ha];var element=a.createElement(t);var firstScriptTag=a.getElementsByTagName(t)[0];element.async=true;element.src=c;firstScriptTag.parentNode.insertBefore(element,firstScriptTag)}})(window,document,"script","https://mjs.getmatcha.com/$this->token/matcha.min.js","matcha");
            matcha('config', 'channelToken', '$this->token');
          </script>
 HOOKFUNCTION;
