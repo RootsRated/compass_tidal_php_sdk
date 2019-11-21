@@ -221,11 +221,8 @@ class RootsRatedSDK {
 
         $hook = <<<HOOKFUNCTION
          <script>
-            (function(r,oo,t,s,ra,te,d){if(!r[ra]){(r.GlobalRootsRatedNamespace=r.GlobalRootsRatedNamespace||[]).push(ra);
-            r[ra]=function(){(r[ra].q=r[ra].q||[]).push(arguments)};r[ra].q=r[ra].q||[];te=oo.createElement(t);
-            d=oo.getElementsByTagName(t)[0];te.async=1;te.src=s;d.parentNode.insertBefore(te,d)
-            }}(window,document,"script","https://static.getmatcha.com/rootsrated.min.js","rr"));
-            rr('config', 'channelToken', '$this->token');
+           (function(m,a,t,c,ha){if(!m[ha]){if(m.rr){m[ha]=m.rr;return}m[ha]=function(){(m[ha].q=m[ha].q||[]).push(arguments)};m[ha].q=m[ha].q||[];m.rr=m[ha];var element=a.createElement(t);var firstScriptTag=a.getElementsByTagName(t)[0];element.async=true;element.src=c + '?v=' + Math.floor(Date.now() / 86400000);firstScriptTag.parentNode.insertBefore(element,firstScriptTag)}})(window,document,"script","https://mjs.getmatcha.com/$this->token/matcha.min.js","matcha");
+           matcha('config', 'channelToken', '$this->token');
          </script>
 HOOKFUNCTION;
 
