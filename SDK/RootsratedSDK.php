@@ -4,7 +4,7 @@ class RootsRatedSDK {
 
     // protected fields
     protected $token;
-    protected $apiURL = 'https://app.getmatcha.com/tidal/v1_0/';
+    protected $apiURL = 'https://blog-app.springbot.com/tidal/v1_0/';
     protected $imageUploadPath;
     protected $key;
     protected $secret;
